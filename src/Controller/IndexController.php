@@ -20,7 +20,7 @@ class IndexController implements ControllerInterface
     {
         $response = new Response();
 
-
+        echo 'Dev';
 
         $response->getBody()->write($this->engine->render('pages/home', ['name' => 'Jonathan']));
 

@@ -1,4 +1,4 @@
-<?php $this->layout('templates/base', ['title' => 'Startseite']) ?>
+<?php $this->layout('templates/base', ['title' => 'Seite nicht gefunden']) ?>
 
 <?php require_once TEMPLATE_DIR.'/parts/navigation.php'?>
 

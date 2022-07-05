@@ -1,16 +1,20 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title><?=$this->e($title)?></title>
-    <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>" />
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link href="<?= $this->asset('css/styles.css') ?>" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= \App\Software::TITLE ?> | <?= $this->e($title) ?></title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="<?= $this->asset('/asset/plugins/fontawesome-free/css/all.min.css') ?>">
+    <link rel="stylesheet" href="<?= $this->asset('/asset/css/adminlte.min.css') ?>">
 </head>
-<body class="sb-nav-fixed">
-    <body>
+<body class="hold-transition sidebar-mini">
+
     <?=$this->section('content')?>
-    </body>
+
+    <script src="<?= $this->asset('/asset/plugins/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= $this->asset('/asset/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= $this->asset('/asset/js/adminlte.min.js') ?>"></script>
+</body>
 </html>

@@ -2,12 +2,35 @@
 
 $container = new \League\Container\Container();
 
-$container->add(\App\Controller\IndexController::class)
+/*
+ *
+ * Routes
+ *
+ * */
+
+$container->add(\App\Controller\LoginController::class)
     ->addArgument(League\Plates\Engine::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
+$container->add(\App\Controller\DashboardController::class)
+    ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+$container->add(\App\Controller\NotFoundController::class)
+    ->addArgument(\League\Plates\Engine::class);
+
+$container->add(\App\Controller\Admin\InfoController::class)
+    ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+/*
+ *
+ * Software Related
+ *
+ * */
+
 $container->add(\League\Plates\Extension\Asset::class)
-    ->addArgument(__DIR__.'/../public/asset')
+    ->addArgument(__DIR__.'/../public')
     ->addArgument(false);
 
 $container->add(\League\Plates\Extension\URI::class)

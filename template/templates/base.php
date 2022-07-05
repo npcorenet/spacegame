@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title><?=$this->e($title)?></title>
+    <title><?= \App\Software::TITLE ?> :: <?=$this->e($title)?></title>
     <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />

@@ -9,7 +9,7 @@ use League\Plates\Engine;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class IndexController implements ControllerInterface
+class LoginController implements ControllerInterface
 {
 
     public function __construct(protected Engine $engine, protected Query $database)
@@ -20,9 +20,7 @@ class IndexController implements ControllerInterface
     {
         $response = new Response();
 
-        echo 'Dev';
-
-        $response->getBody()->write($this->engine->render('pages/home', ['name' => 'Jonathan']));
+        $response->getBody()->write($this->engine->render('pages/authentication/login', []));
 
         return $response;
     }

@@ -2,7 +2,7 @@
 
 $container = new \League\Container\Container();
 
-$container->add(\App\Controller\IndexController::class)
+$container->add(\App\Controller\LoginController::class)
     ->addArgument(League\Plates\Engine::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 

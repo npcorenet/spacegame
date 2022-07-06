@@ -67,8 +67,7 @@ class RegisterController implements ControllerInterface
                 return;
             }
 
-
-            if(count($accountTable->findByEmail($accountModel->getEmail())) > 0) {
+            if($accountTable->findByEmail($accountModel->getEmail()) !== FALSE) {
                 $this->messages[] = ['type' => 'danger', 'message' => 'Ein Account mit dieser Email existiert bereits'];
                 return;
             }

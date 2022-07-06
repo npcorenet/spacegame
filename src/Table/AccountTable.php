@@ -8,7 +8,7 @@ use App\Table\AbstractTable;
 class AccountTable extends AbstractTable
 {
 
-    public function findByEmail(string $email): bool|array
+    public function findByEmail(string $email): array|bool
     {
         return $this->query->from($this->getTableName())->where('email', $email)->fetch();
     }

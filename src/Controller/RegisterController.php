@@ -6,6 +6,7 @@ use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
 use App\Service\AccountService;
 use App\Table\AccountTable;
+use App\Validation\RegisterFieldValidation;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 use League\Plates\Engine;
@@ -53,13 +54,25 @@ class RegisterController implements ControllerInterface
             $accountModel = new AccountModel();
             $accountModel->setUsername($_POST['companyNameRegister']);
             $accountModel->setEmail($_POST['emailRegister']);
-            $accountModel->setPassword($accountService->hashPassword($_POST['passwordRegister']));
+            $accountModel->setPassword($_POST['passwordRegister']);
 
             $accountTable = new AccountTable($this->query);
+
+            $validation = new RegisterFieldValidation($accountModel);
+            $valid = $validation->validate();
+            if(count($valid) > 0)
+            {
+                $this->messages = array_merge($validation->validate(), $this->messages);
+                return;
+            }
+
+
             if(count($accountTable->findByEmail($accountModel->getEmail())) > 0) {
                 $this->messages[] = ['type' => 'danger', 'message' => 'Ein Account mit dieser Email existiert bereits'];
                 return;
             }
+
+            $accountModel->setPassword($accountService->hashPassword($accountModel->getPassword()));
 
             if($accountTable->insert($accountModel))
             {

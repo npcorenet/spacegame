@@ -10,4 +10,9 @@ class AccountService
         return password_hash($password, PASSWORD_BCRYPT);
     }
 
+    public function verifyPassword(string $password, string $passwordHashed): bool
+    {
+        return password_verify($password, $passwordHashed);
+    }
+
 }

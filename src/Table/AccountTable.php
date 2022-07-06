@@ -10,7 +10,7 @@ class AccountTable extends AbstractTable
 
     public function findByEmail(string $email): bool|array
     {
-        return $this->query->from($this->getTableName())->where('email', $email)->fetchAll();
+        return $this->query->from($this->getTableName())->where('email', $email)->fetch();
     }
 
     public function insert(AccountModel $accountModel): bool|array

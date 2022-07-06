@@ -1,6 +1,14 @@
 <?php $this->layout('templates/authentication', ['title' => 'Anmelden', 'type' => 'register']) ?>
 
 <div class="register-box">
+
+    <?php
+    foreach ($messages as $message) {
+
+        require TEMPLATE_DIR.'/parts/alert.php';
+
+    } ?>
+
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
             <a href="/" class="h1"><?= \App\Software::TITLE ?></a>
@@ -27,14 +35,6 @@
                 </div>
                 <div class="input-group mb-3">
                     <input type="password" class="form-control" placeholder="Passwort" name="passwordRegister">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Passwort wiederholen" name="passwordRetypeRegister">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>

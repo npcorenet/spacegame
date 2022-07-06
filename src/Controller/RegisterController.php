@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Interfaces\ControllerInterface;
+use App\Model\AccountModel;
+use App\Service\AccountService;
+use App\Table\AccountTable;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 use League\Plates\Engine;
@@ -11,6 +14,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class RegisterController implements ControllerInterface
 {
+
+    private array $messages = [];
 
     public function __construct(
         protected Engine $templateEngine,
@@ -29,7 +34,7 @@ class RegisterController implements ControllerInterface
 
         }
 
-        $response->getBody()->write($this->templateEngine->render('pages/authentication/register'));
+        $response->getBody()->write($this->templateEngine->render('pages/authentication/register', ['messages' => $this->messages]));
 
         return $response;
     }
@@ -39,12 +44,30 @@ class RegisterController implements ControllerInterface
 
         if(isset($_POST['companyNameRegister'],
             $_POST['emailRegister'],
-            $_POST['passwordRegister'],
-            $_POST['passwordRetypeRegister'])
+            $_POST['passwordRegister'])
         )
         {
 
+            $accountService = new AccountService();
 
+            $accountModel = new AccountModel();
+            $accountModel->setUsername($_POST['companyNameRegister']);
+            $accountModel->setEmail($_POST['emailRegister']);
+            $accountModel->setPassword($accountService->hashPassword($_POST['passwordRegister']));
+
+            $accountTable = new AccountTable($this->query);
+            if(count($accountTable->findByEmail($accountModel->getEmail())) > 0) {
+                $this->messages[] = ['type' => 'danger', 'message' => 'Ein Account mit dieser Email existiert bereits'];
+                return;
+            }
+
+            if($accountTable->insert($accountModel))
+            {
+                $this->messages[] = ['type' => 'success', 'message' => 'Konto wurde angelegt'];
+                return;
+            }
+
+            $this->messages[] = ['type' => 'danger', 'message' => 'Ein unbekannter Fehler ist aufgetreten'];
 
         }
 

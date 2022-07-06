@@ -1,4 +1,4 @@
-<?php $this->layout('templates/authentication', ['title' => 'Anmelden', 'type' => 'register']) ?>
+<?php $this->layout('templates/authentication', ['title' => 'Registrieren', 'type' => 'register']) ?>
 
 <div class="register-box">
 
@@ -44,7 +44,7 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="icheck-primary">
-                            <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                            <input type="checkbox" id="agreeTerms" name="termsRegisterAccept" value="agree">
                             <label for="agreeTerms">
                                 Ich akzeptiere die <a href="#">Nutzungsbedingungen</a>
                             </label>

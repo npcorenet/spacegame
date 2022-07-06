@@ -55,6 +55,7 @@ class RegisterController implements ControllerInterface
             $accountModel->setUsername($_POST['companyNameRegister']);
             $accountModel->setEmail($_POST['emailRegister']);
             $accountModel->setPassword($_POST['passwordRegister']);
+            $accountModel->setAcceptedTerms(isset($_POST['termsRegisterAccept']));
 
             $accountTable = new AccountTable($this->query);
 

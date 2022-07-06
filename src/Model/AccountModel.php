@@ -14,6 +14,8 @@ class AccountModel
     protected bool $isPublic;
     protected bool $isAdmin;
 
+    protected bool $acceptedTerms;
+
     public function getId(): int
     {
         return $this->id;
@@ -93,5 +95,16 @@ class AccountModel
     {
         $this->isAdmin = $isAdmin;
     }
+
+    public function getAcceptedTerms(): bool
+    {
+        return $this->acceptedTerms;
+    }
+
+    public function setAcceptedTerms(bool $acceptedTerms): void
+    {
+        $this->acceptedTerms = $acceptedTerms;
+    }
+
 
 }

@@ -31,6 +31,10 @@ class RegisterFieldValidation
             $messages[] = ['type' => 'danger', 'message' => 'Das Passwort muss mindestens 8 Zeichen lang sein'];
         }
 
+        if(!$this->accountModel->getAcceptedTerms()) {
+            $messages[] = ['type' => 'danger', 'message' => 'Bitte akzeptiere die Nutzungsbedingungen'];
+        }
+
         return $messages;
 
     }

@@ -5,6 +5,8 @@ $request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals(
 );
 
 $router->get('/login', 'App\Controller\LoginController::get');
+$router->get('/register', 'App\Controller\RegisterController::get');
+$router->post('/register', 'App\Controller\RegisterController::get');
 
 $router->get('/dashboard', 'App\Controller\DashboardController::get');
 

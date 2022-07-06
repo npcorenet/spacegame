@@ -12,7 +12,10 @@ use Psr\Http\Message\ServerRequestInterface;
 class LoginController implements ControllerInterface
 {
 
-    public function __construct(protected Engine $engine, protected Query $database)
+    public function __construct(
+        protected Engine $engine,
+        protected Query $database
+    )
     {
     }
 

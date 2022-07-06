@@ -1,4 +1,4 @@
-<?php $this->layout('templates/authentication', ['title' => 'Anmelden']) ?>
+<?php $this->layout('templates/authentication', ['title' => 'Anmelden', 'type' => 'login']) ?>
 
 <div class="login-box">
     <div class="card card-outline card-primary">
@@ -8,7 +8,7 @@
         <div class="card-body">
             <p class="login-box-msg">Sign in to start your session</p>
 
-            <form action="../../index3.html" method="post">
+            <form action="/" method="post">
                 <div class="input-group mb-3">
                     <input type="email" class="form-control" placeholder="Email">
                     <div class="input-group-append">

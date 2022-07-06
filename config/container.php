@@ -12,6 +12,10 @@ $container->add(\App\Controller\LoginController::class)
     ->addArgument(League\Plates\Engine::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
+$container->add(\App\Controller\RegisterController::class)
+    ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
 $container->add(\App\Controller\DashboardController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\Envms\FluentPDO\Query::class);

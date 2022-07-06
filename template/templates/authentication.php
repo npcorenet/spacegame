@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="<?= $this->asset('/asset/plugins/fontawesome-free/css/all.min.css') ?>">
     <link rel="stylesheet" href="<?= $this->asset('/asset/css/adminlte.min.css') ?>">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition <?= $type ?>-page">
 
 <?=$this->section('content')?>
 

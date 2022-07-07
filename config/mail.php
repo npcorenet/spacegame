@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 const SMTP_HOST = '';
 const SMTP_PORT = '';

@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
 use App\Service\AccountService;
+use App\Service\ActivateAccountService;
 use App\Table\AccountTable;
+use App\Table\TokenTable;
 use App\Validation\RegisterFieldValidation;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 use League\Plates\Engine;
+use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -73,10 +76,12 @@ class RegisterController implements ControllerInterface
             }
 
             $accountModel->setPassword($accountService->hashPassword($accountModel->getPassword()));
+            $activateAccountService = new ActivateAccountService();
 
             if($accountTable->insert($accountModel))
             {
                 $this->messages[] = ['type' => 'success', 'message' => 'Konto wurde angelegt'];
+                $activateAccountService->generateActivationToken(new TokenTable($this->query), $accountTable, $accountModel);
                 return;
             }
 

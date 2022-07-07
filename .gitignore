@@ -1,3 +1,4 @@
 /vendor/
 .ddev/
 .idea/
+config/mail.php

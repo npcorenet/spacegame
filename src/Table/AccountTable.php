@@ -27,4 +27,9 @@ class AccountTable extends AbstractTable
 
     }
 
+    public function setActivated(int $status, int $userId): bool|array
+    {
+        return $this->query->update($this->getTableName())->set('isActivated', $status)->where('id', $userId)->execute();
+    }
+
 }

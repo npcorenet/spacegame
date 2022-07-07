@@ -13,6 +13,7 @@ class AccountModel
     protected string $banner;
     protected bool $isPublic;
     protected bool $isAdmin;
+    protected int $isActivated;
 
     protected bool $acceptedTerms;
 
@@ -106,5 +107,14 @@ class AccountModel
         $this->acceptedTerms = $acceptedTerms;
     }
 
+    public function getIsActivated(): int
+    {
+        return $this->isActivated;
+    }
+
+    public function setIsActivated(int $isActivated): void
+    {
+        $this->isActivated = $isActivated;
+    }
 
 }

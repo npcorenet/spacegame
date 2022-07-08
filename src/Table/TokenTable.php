@@ -17,7 +17,7 @@ class TokenTable extends AbstractTable
             'user' => $tokenModel->getUser()
         ];
 
-        return $this->query->insertInto($this->getTableName())->values($values)->execute();
+        return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
     }
 
     public function findByToken(string $token): bool|array

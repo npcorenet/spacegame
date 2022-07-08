@@ -13,4 +13,7 @@ class Software
     public const REPO_URI = 'https://github.com/npcorenet/spacegame';
     public const CHANGELOG_URI = '';
 
+    # Software URL without / at the end
+    public const WEBPAGE_URI = 'https://spacegame.ddev.site';
+
 }

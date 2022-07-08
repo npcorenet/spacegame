@@ -23,7 +23,7 @@ class AccountTable extends AbstractTable
                 'username' => $accountModel->getUsername()
             ];
 
-        return $this->query->insertInto($this->getTableName())->values($values)->execute();
+        return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
 
     }
 

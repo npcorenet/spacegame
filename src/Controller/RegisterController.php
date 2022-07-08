@@ -6,12 +6,14 @@ use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
 use App\Service\AccountService;
 use App\Service\ActivateAccountService;
+use App\Software;
 use App\Table\AccountTable;
 use App\Table\TokenTable;
 use App\Validation\RegisterFieldValidation;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 use League\Plates\Engine;
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,7 +25,8 @@ class RegisterController implements ControllerInterface
 
     public function __construct(
         protected Engine $templateEngine,
-        protected Query $query
+        protected Query $query,
+        protected PHPMailer $mailer
     )
     {
     }
@@ -81,7 +84,13 @@ class RegisterController implements ControllerInterface
             if($accountTable->insert($accountModel))
             {
                 $this->messages[] = ['type' => 'success', 'message' => 'Konto wurde angelegt'];
-                $activateAccountService->generateActivationToken(new TokenTable($this->query), $accountTable, $accountModel);
+                $token = $activateAccountService->generateActivationToken(new TokenTable($this->query), $accountTable, $accountModel);
+
+                if(!$activateAccountService->sendActivationMail($this->mailer, $accountModel->getEmail(), $accountModel->getUsername(), $token, $this->templateEngine))
+                {
+                    $this->messages[] = ['type' => 'danger', 'message' => 'Die Aktivierungs-Email konnte nicht versendet werden. Bitte kontaktiere den Support'];
+                }
+
                 return;
             }
 

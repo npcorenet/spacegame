@@ -67,5 +67,7 @@ $container->add(\PHPMailer\PHPMailer\PHPMailer::class)
     ->addMethodCall('set', ['SMTPAuth', SMTP_AUTH])
     ->addMethodCall('set', ['SMTPSecure', \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS]);
 
+$container->add(\App\Helper\MessageHelper::class);
+
 $strategy = (new \League\Route\Strategy\ApplicationStrategy())->setContainer($container);
 $router = (new \League\Route\Router())->setStrategy($strategy);

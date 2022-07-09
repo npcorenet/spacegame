@@ -36,7 +36,7 @@ class TokenTable extends AbstractTable
 
     public function setIsUsed(int $status, string $token): bool|array
     {
-        return $this->query->update($this->getTableName())->set('isUsed', $status)->where('token', $token)->execute();
+        return $this->query->update($this->getTableName())->set('isUsed', $status)->where('token', $token)->execute() > 0;
     }
 
 }

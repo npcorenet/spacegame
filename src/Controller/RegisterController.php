@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Helper\MessageHelper;
 use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
 use App\Service\AccountService;
@@ -21,12 +22,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class RegisterController implements ControllerInterface
 {
 
-    private array $messages = [];
-
     public function __construct(
         protected Engine $templateEngine,
         protected Query $query,
-        protected PHPMailer $mailer
+        protected PHPMailer $mailer,
+        protected MessageHelper $messageHelper
     )
     {
     }
@@ -41,7 +41,7 @@ class RegisterController implements ControllerInterface
 
         }
 
-        $response->getBody()->write($this->templateEngine->render('pages/authentication/register', ['messages' => $this->messages]));
+        $response->getBody()->write($this->templateEngine->render('pages/authentication/register', ['messages' => $this->messageHelper->getMessageArray()]));
 
         return $response;
     }
@@ -65,16 +65,13 @@ class RegisterController implements ControllerInterface
 
             $accountTable = new AccountTable($this->query);
 
-            $validation = new RegisterFieldValidation($accountModel);
-            $valid = $validation->validate();
-            if(count($valid) > 0)
-            {
-                $this->messages = array_merge($validation->validate(), $this->messages);
+            $validation = new RegisterFieldValidation($accountModel, $this->messageHelper);
+            $validation->validate();
+            if($this->messageHelper->countMessageByType('danger') > 0)
                 return;
-            }
 
             if($accountTable->findByEmail($accountModel->getEmail()) !== FALSE) {
-                $this->messages[] = ['type' => 'danger', 'message' => 'Ein Account mit dieser Email existiert bereits'];
+                $this->messageHelper->addMessage('danger', 'Die angegebene E-Mail wird bereits verwendet');
                 return;
             }
 
@@ -83,18 +80,18 @@ class RegisterController implements ControllerInterface
 
             if($accountTable->insert($accountModel))
             {
-                $this->messages[] = ['type' => 'success', 'message' => 'Konto wurde angelegt'];
+                $this->messageHelper->addMessage('success', 'Das Konto wurde angelegt');
                 $token = $activateAccountService->generateActivationToken(new TokenTable($this->query), $accountTable, $accountModel);
 
                 if(!$activateAccountService->sendActivationMail($this->mailer, $accountModel->getEmail(), $accountModel->getUsername(), $token, $this->templateEngine))
                 {
-                    $this->messages[] = ['type' => 'danger', 'message' => 'Die Aktivierungs-Email konnte nicht versendet werden. Bitte kontaktiere den Support'];
+                    $this->messageHelper->addMessage('danger', 'Die Aktivierungs-Email konnte nicht versandt werden. Bitte kontaktiere den Support');
                 }
 
                 return;
             }
 
-            $this->messages[] = ['type' => 'danger', 'message' => 'Ein unbekannter Fehler ist aufgetreten'];
+            $this->messageHelper->addMessage('danger', 'Ein unbekannter Fehler ist aufgetreten');
 
         }
 

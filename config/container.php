@@ -15,7 +15,8 @@ $container->add(\App\Controller\LoginController::class)
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\PHPMailer\PHPMailer\PHPMailer::class);
+    ->addArgument(\PHPMailer\PHPMailer\PHPMailer::class)
+    ->addArgument(\App\Helper\MessageHelper::class);
 
 $container->add(\App\Controller\ActivateAccountController::class)
     ->addArgument(\Envms\FluentPDO\Query::class);

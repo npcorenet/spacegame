@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 $container = new \League\Container\Container();
 
@@ -14,6 +14,10 @@ $container->add(\App\Controller\LoginController::class)
 
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\PHPMailer\PHPMailer\PHPMailer::class);
+
+$container->add(\App\Controller\ActivateAccountController::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Controller\DashboardController::class)
@@ -52,6 +56,16 @@ $container->add(PDO::class)
 
 $container->add(Envms\FluentPDO\Query::class)
     ->addArgument(PDO::class);
+
+$container->add(\PHPMailer\PHPMailer\PHPMailer::class)
+    ->addMethodCall('isSMTP')
+    ->addMethodCall('set', ['Host', SMTP_HOST])
+    ->addMethodCall('set', ['Username', SMTP_USER])
+    ->addMethodCall('set', ['Password', SMTP_PASSWORD])
+    ->addMethodCall('set', ['Port', SMTP_PORT])
+    ->addMethodCall('set', [SMTP_DISPLAYMAIL, SMTP_DISPLAYNAME])
+    ->addMethodCall('set', ['SMTPAuth', SMTP_AUTH])
+    ->addMethodCall('set', ['SMTPSecure', \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS]);
 
 $strategy = (new \League\Route\Strategy\ApplicationStrategy())->setContainer($container);
 $router = (new \League\Route\Router())->setStrategy($strategy);

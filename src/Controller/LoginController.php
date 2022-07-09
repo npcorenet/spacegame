@@ -71,11 +71,17 @@ class LoginController implements ControllerInterface
 
             $accountService = new AccountService();
 
+            if($accountData['isActivated'] === 0)
+            {
+                $this->messages[] = ['type' => 'danger', 'message' => 'Das gesuchte Konto wurde noch nicht aktiviert.'];
+                return;
+            }
+
             if($accountService->verifyPassword($accountModel->getPassword(), $accountData['password']))
             {
                 $_SESSION['spacegame_loginId'] = $accountData['id'];
                 $this->messages[] = ['type' => 'success', 'message' => 'Die Anmeldung war erfolgreich.'];
-                // header("Location: /dashboard/");
+                header("Location: /dashboard/");
                 return;
             }
 

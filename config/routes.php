@@ -8,6 +8,7 @@ $router->get('/login', 'App\Controller\LoginController::get');
 $router->post('/login', 'App\Controller\LoginController::get');
 $router->get('/register', 'App\Controller\RegisterController::get');
 $router->post('/register', 'App\Controller\RegisterController::get');
+$router->get('/account/activate', 'App\Controller\ActivateAccountController::get');
 
 $router->get('/dashboard', 'App\Controller\DashboardController::get');
 

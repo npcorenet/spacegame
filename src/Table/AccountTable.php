@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Table;
 
@@ -23,8 +23,13 @@ class AccountTable extends AbstractTable
                 'username' => $accountModel->getUsername()
             ];
 
-        return $this->query->insertInto($this->getTableName())->values($values)->execute();
+        return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
 
+    }
+
+    public function setActivated(int $status, int $userId): bool|array
+    {
+        return $this->query->update($this->getTableName())->set('isActivated', $status)->where('id', $userId)->execute();
     }
 
 }

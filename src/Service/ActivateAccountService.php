@@ -20,7 +20,13 @@ class ActivateAccountService
         return \DateTime::createFromFormat(TimeService::MySQL_Time_Format, $string);
     }
 
-    public function sendActivationMail(PHPMailer $mailer, string $email, string $username, TokenModel $tokenModel, Engine $engine): bool
+    public function sendActivationMail(
+        PHPMailer $mailer,
+        string $email,
+        string $username,
+        TokenModel $tokenModel,
+        Engine $engine
+    ): bool
     {
         try {
             $mailer->addAddress($email, $username);
@@ -35,12 +41,12 @@ class ActivateAccountService
         }
     }
 
-    public function generateActivationTokenString(): string
-    {
-         return(bin2hex(openssl_random_pseudo_bytes(32)));
-    }
-
-    public function generateActivationToken(TokenTable $tokenTable, AccountTable $accountTable, AccountModel $accountModel): TokenModel|bool
+    public function generateActivationToken(
+        TokenTable $tokenTable,
+        AccountTable $accountTable,
+        AccountModel $accountModel,
+        TokenService $tokenService
+    ): TokenModel|bool
     {
 
         $assignUser = $accountTable->findByEmail($accountModel->getEmail())['id'];
@@ -48,7 +54,7 @@ class ActivateAccountService
         $expiry = new \DateTime('+1 Hour');
 
         $tokenModel = new TokenModel();
-        $tokenModel->setToken($this->generateActivationTokenString());
+        $tokenModel->setToken($tokenService->generateTokenString());
         $tokenModel->setUser($assignUser);
         $tokenModel->setType(TokenTypeModel::ActivateAccount);
         $tokenModel->setValidUntil($expiry);

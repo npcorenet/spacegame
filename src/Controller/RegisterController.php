@@ -7,6 +7,8 @@ use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
 use App\Service\AccountService;
 use App\Service\ActivateAccountService;
+use App\Service\RegistrationService;
+use App\Service\TokenService;
 use App\Software;
 use App\Table\AccountTable;
 use App\Table\TokenTable;
@@ -55,8 +57,6 @@ class RegisterController implements ControllerInterface
         )
         {
 
-            $accountService = new AccountService();
-
             $accountModel = new AccountModel();
             $accountModel->setUsername($_POST['companyNameRegister']);
             $accountModel->setEmail($_POST['emailRegister']);
@@ -64,35 +64,28 @@ class RegisterController implements ControllerInterface
             $accountModel->setAcceptedTerms(isset($_POST['termsRegisterAccept']));
 
             $accountTable = new AccountTable($this->query);
+            $accountService = new AccountService();
 
-            $validation = new RegisterFieldValidation($accountModel, $this->messageHelper);
-            $validation->validate();
-            if($this->messageHelper->countMessageByType('danger') > 0)
-                return;
+            $registrationService = new RegistrationService(
+                $this->messageHelper,
+                $accountModel,
+                $accountTable,
+                $accountService
+            );
 
-            if($accountTable->findByEmail($accountModel->getEmail()) !== FALSE) {
-                $this->messageHelper->addMessage('danger', 'Die angegebene E-Mail wird bereits verwendet');
-                return;
-            }
-
-            $accountModel->setPassword($accountService->hashPassword($accountModel->getPassword()));
+            $validation = new RegisterFieldValidation();
             $activateAccountService = new ActivateAccountService();
+            $tokenTable = new TokenTable($this->query);
+            $tokenService = new TokenService();
 
-            if($accountTable->insert($accountModel))
-            {
-                $this->messageHelper->addMessage('success', 'Das Konto wurde angelegt');
-                $token = $activateAccountService->generateActivationToken(new TokenTable($this->query), $accountTable, $accountModel);
-
-                if(!$activateAccountService->sendActivationMail($this->mailer, $accountModel->getEmail(), $accountModel->getUsername(), $token, $this->templateEngine))
-                {
-                    $this->messageHelper->addMessage('danger', 'Die Aktivierungs-Email konnte nicht versandt werden. Bitte kontaktiere den Support');
-                }
-
-                return;
-            }
-
-            $this->messageHelper->addMessage('danger', 'Ein unbekannter Fehler ist aufgetreten');
-
+            $registrationService->register(
+                $validation,
+                $activateAccountService,
+                $tokenTable,
+                $tokenService,
+                $this->mailer,
+                $this->templateEngine
+            );
         }
 
     }

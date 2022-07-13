@@ -8,7 +8,6 @@ use App\Table\AccountTable;
 use App\Table\TokenTable;
 use App\Validation\RegisterFieldValidation;
 use League\Plates\Engine;
-use MongoDB\Driver\Query;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class RegistrationService

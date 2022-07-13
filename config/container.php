@@ -10,7 +10,8 @@ $container = new \League\Container\Container();
 
 $container->add(\App\Controller\LoginController::class)
     ->addArgument(League\Plates\Engine::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\MessageHelper::class);
 
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\League\Plates\Engine::class)

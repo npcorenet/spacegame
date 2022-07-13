@@ -77,7 +77,7 @@ class AccountModel
         $this->banner = $banner;
     }
 
-    public function isPublic(): bool
+    public function getIsPublic(): bool
     {
         return $this->isPublic;
     }
@@ -87,7 +87,7 @@ class AccountModel
         $this->isPublic = $isPublic;
     }
 
-    public function isAdmin(): bool
+    public function getIsAdmin(): bool
     {
         return $this->isAdmin;
     }

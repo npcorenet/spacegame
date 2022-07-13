@@ -65,27 +65,27 @@ class RegisterController implements ControllerInterface
 
             $accountTable = new AccountTable($this->query);
             $accountService = new AccountService();
-
-            $registrationService = new RegistrationService(
-                $this->messageHelper,
-                $accountModel,
-                $accountTable,
-                $accountService
-            );
-
             $validation = new RegisterFieldValidation();
             $activateAccountService = new ActivateAccountService();
             $tokenTable = new TokenTable($this->query);
             $tokenService = new TokenService();
+            $validation = new RegisterFieldValidation();
 
-            $registrationService->register(
+
+            $registrationService = new RegistrationService(
                 $validation,
+                $this->messageHelper,
+                $accountModel,
+                $accountTable,
+                $accountService,
                 $activateAccountService,
                 $tokenTable,
                 $tokenService,
                 $this->mailer,
                 $this->templateEngine
             );
+
+            $registrationService->register();
         }
 
     }

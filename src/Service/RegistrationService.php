@@ -14,25 +14,24 @@ class RegistrationService
 {
 
     public function __construct(
+        private RegisterFieldValidation $validation,
         private MessageHelper $messageHelper,
         private AccountModel $accountModel,
         private AccountTable $accountTable,
         private AccountService $accountService,
+        private ActivateAccountService $activateAccountService,
+        private TokenTable $tokenTable,
+        private TokenService $tokenService,
+        private PHPMailer $mailer,
+        private Engine $templateEngine
     )
     {
     }
 
-    public function register(
-        RegisterFieldValidation $validation,
-        ActivateAccountService $activateAccountService,
-        TokenTable $tokenTable,
-        TokenService $tokenService,
-        PHPMailer $mailer,
-        Engine $templateEngine
-    ): bool
+    public function register(): bool
     {
 
-        if($this->verifyFields($validation, $this->accountModel) === FALSE)
+        if($this->verifyFields() === FALSE)
             return false;
 
         if($this->accountTable->findByEmail($this->accountModel->getEmail()) !== FALSE) {
@@ -45,9 +44,20 @@ class RegistrationService
         if($this->accountTable->insert($this->accountModel))
         {
             $this->messageHelper->addMessage('success', 'Das Konto wurde angelegt');
-            $token = $activateAccountService->generateActivationToken($tokenTable, $this->accountTable, $this->accountModel, $tokenService);
+            $token = $this->activateAccountService->generateActivationToken(
+                $this->tokenTable,
+                $this->accountTable,
+                $this->accountModel,
+                $this->tokenService
+            );
 
-            if(!$activateAccountService->sendActivationMail($mailer, $this->accountModel->getEmail(), $this->accountModel->getUsername(), $token, $templateEngine))
+            if(!$this->activateAccountService->sendActivationMail(
+                $this->mailer,
+                $this->accountModel->getEmail(),
+                $this->accountModel->getUsername(),
+                $token,
+                $this->templateEngine)
+            )
             {
                 $this->messageHelper->addMessage('danger', 'Die Aktivierungs-Email konnte nicht versandt werden. Bitte kontaktiere den Support');
             }
@@ -60,16 +70,10 @@ class RegistrationService
 
     }
 
-    public function verifyFields(
-        RegisterFieldValidation $validation,
-        AccountModel $accountModel
-    ): bool
+    private function verifyFields(): bool
     {
-        $validation->validate($accountModel, $this->messageHelper);
-        if($this->messageHelper->countMessageByType('danger') > 0)
-            return false;
-
-        return true;
+        return ($this->validation->validate($this->accountModel, $this->messageHelper)) &&
+            ($this->messageHelper->countMessageByType('danger') > 0);
     }
 
 }

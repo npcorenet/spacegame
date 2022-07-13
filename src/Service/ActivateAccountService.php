@@ -15,11 +15,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 class ActivateAccountService
 {
 
-    public function stringToDateTime($string): \DateTime
-    {
-        return \DateTime::createFromFormat(TimeService::MySQL_Time_Format, $string);
-    }
-
     public function sendActivationMail(
         PHPMailer $mailer,
         string $email,
@@ -61,6 +56,11 @@ class ActivateAccountService
 
         return $tokenTable->insert($tokenModel) ? $tokenModel : false;
 
+    }
+
+    public function stringToDateTime($string): \DateTime
+    {
+        return \DateTime::createFromFormat(TimeService::MySQL_Time_Format, $string);
     }
 
 }

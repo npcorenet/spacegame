@@ -2,40 +2,36 @@
 
 namespace App\Validation;
 
+use App\Helper\MessageHelper;
 use App\Model\AccountModel;
 
 class RegisterFieldValidation
 {
 
-    public function __construct(
-        private AccountModel $accountModel
-    )
-    {
-    }
-
-    public function validate(): array
+    public function validate(
+        AccountModel $accountModel,
+        MessageHelper $messageHelper
+    ): self
     {
 
-        $messages = [];
-
-        if(!filter_var($this->accountModel->getEmail(), FILTER_VALIDATE_EMAIL))
+        if(!filter_var($accountModel->getEmail(), FILTER_VALIDATE_EMAIL))
         {
-            $messages[] = ['type' => 'danger', 'message' => 'Die angegebene Email ist ungültig'];
+            $messageHelper->addMessage('danger', 'Die angegebene E-Mail ist ungültig');
         }
 
-        if(empty($this->accountModel->getUsername())) {
-            $messages[] = ['type' => 'danger', 'message' => 'Der Unternehmensname darf nicht leer sein'];
+        if(empty($accountModel->getUsername())) {
+            $messageHelper->addMessage('danger', 'Der Unternehmensname darf nicht leer sein');
         }
 
-        if(mb_strlen($this->accountModel->getPassword()) < 8) {
-            $messages[] = ['type' => 'danger', 'message' => 'Das Passwort muss mindestens 8 Zeichen lang sein'];
+        if(mb_strlen($accountModel->getPassword()) < 8) {
+            $messageHelper->addMessage('danger', 'Das Passwort muss mindestens 8 Zeichen lang sein');
         }
 
-        if(!$this->accountModel->getAcceptedTerms()) {
-            $messages[] = ['type' => 'danger', 'message' => 'Bitte akzeptiere die Nutzungsbedingungen'];
+        if(!$accountModel->getAcceptedTerms()) {
+            $messageHelper->addMessage('danger', 'Die Nutzungsbedingungen müssen akzeptiert werden');
         }
 
-        return $messages;
+        return $this;
 
     }
 

@@ -10,15 +10,18 @@ $container = new \League\Container\Container();
 
 $container->add(\App\Controller\LoginController::class)
     ->addArgument(League\Plates\Engine::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\MessageHelper::class);
 
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\PHPMailer\PHPMailer\PHPMailer::class);
+    ->addArgument(\PHPMailer\PHPMailer\PHPMailer::class)
+    ->addArgument(\App\Helper\MessageHelper::class);
 
 $container->add(\App\Controller\ActivateAccountController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\MessageHelper::class);
 
 $container->add(\App\Controller\DashboardController::class)
     ->addArgument(\League\Plates\Engine::class)
@@ -66,6 +69,8 @@ $container->add(\PHPMailer\PHPMailer\PHPMailer::class)
     ->addMethodCall('set', [SMTP_DISPLAYMAIL, SMTP_DISPLAYNAME])
     ->addMethodCall('set', ['SMTPAuth', SMTP_AUTH])
     ->addMethodCall('set', ['SMTPSecure', \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS]);
+
+$container->add(\App\Helper\MessageHelper::class);
 
 $strategy = (new \League\Route\Strategy\ApplicationStrategy())->setContainer($container);
 $router = (new \League\Route\Router())->setStrategy($strategy);

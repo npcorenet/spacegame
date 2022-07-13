@@ -2,3 +2,4 @@
 .ddev/
 .idea/
 /config/mail.php
+/myreport/

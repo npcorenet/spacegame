@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Helper\MessageHelper;
 use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
 use App\Service\AccountService;
 use App\Service\ActivateAccountService;
+use App\Service\RegistrationService;
+use App\Service\TokenService;
 use App\Software;
 use App\Table\AccountTable;
 use App\Table\TokenTable;
@@ -21,12 +24,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class RegisterController implements ControllerInterface
 {
 
-    private array $messages = [];
-
     public function __construct(
         protected Engine $templateEngine,
         protected Query $query,
-        protected PHPMailer $mailer
+        protected PHPMailer $mailer,
+        protected MessageHelper $messageHelper
     )
     {
     }
@@ -41,7 +43,7 @@ class RegisterController implements ControllerInterface
 
         }
 
-        $response->getBody()->write($this->templateEngine->render('pages/authentication/register', ['messages' => $this->messages]));
+        $response->getBody()->write($this->templateEngine->render('pages/authentication/register', ['messages' => $this->messageHelper->getMessageArray()]));
 
         return $response;
     }
@@ -55,8 +57,6 @@ class RegisterController implements ControllerInterface
         )
         {
 
-            $accountService = new AccountService();
-
             $accountModel = new AccountModel();
             $accountModel->setUsername($_POST['companyNameRegister']);
             $accountModel->setEmail($_POST['emailRegister']);
@@ -64,38 +64,28 @@ class RegisterController implements ControllerInterface
             $accountModel->setAcceptedTerms(isset($_POST['termsRegisterAccept']));
 
             $accountTable = new AccountTable($this->query);
-
-            $validation = new RegisterFieldValidation($accountModel);
-            $valid = $validation->validate();
-            if(count($valid) > 0)
-            {
-                $this->messages = array_merge($validation->validate(), $this->messages);
-                return;
-            }
-
-            if($accountTable->findByEmail($accountModel->getEmail()) !== FALSE) {
-                $this->messages[] = ['type' => 'danger', 'message' => 'Ein Account mit dieser Email existiert bereits'];
-                return;
-            }
-
-            $accountModel->setPassword($accountService->hashPassword($accountModel->getPassword()));
+            $accountService = new AccountService();
+            $validation = new RegisterFieldValidation();
             $activateAccountService = new ActivateAccountService();
+            $tokenTable = new TokenTable($this->query);
+            $tokenService = new TokenService();
+            $validation = new RegisterFieldValidation();
 
-            if($accountTable->insert($accountModel))
-            {
-                $this->messages[] = ['type' => 'success', 'message' => 'Konto wurde angelegt'];
-                $token = $activateAccountService->generateActivationToken(new TokenTable($this->query), $accountTable, $accountModel);
 
-                if(!$activateAccountService->sendActivationMail($this->mailer, $accountModel->getEmail(), $accountModel->getUsername(), $token, $this->templateEngine))
-                {
-                    $this->messages[] = ['type' => 'danger', 'message' => 'Die Aktivierungs-Email konnte nicht versendet werden. Bitte kontaktiere den Support'];
-                }
+            $registrationService = new RegistrationService(
+                $validation,
+                $this->messageHelper,
+                $accountModel,
+                $accountTable,
+                $accountService,
+                $activateAccountService,
+                $tokenTable,
+                $tokenService,
+                $this->mailer,
+                $this->templateEngine
+            );
 
-                return;
-            }
-
-            $this->messages[] = ['type' => 'danger', 'message' => 'Ein unbekannter Fehler ist aufgetreten'];
-
+            $registrationService->register();
         }
 
     }

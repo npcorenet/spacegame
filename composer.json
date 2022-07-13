@@ -23,5 +23,8 @@
         "laminas/laminas-diactoros": "^2.11",
         "laminas/laminas-httphandlerrunner": "^2.1",
         "phpmailer/phpmailer": "^6.6"
+    },
+    "require-dev": {
+        "phpmetrics/phpmetrics": "^2.8"
     }
 }

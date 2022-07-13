@@ -25,6 +25,7 @@
         "phpmailer/phpmailer": "^6.6"
     },
     "require-dev": {
-        "phpmetrics/phpmetrics": "^2.8"
+        "phpmetrics/phpmetrics": "^2.8",
+        "phpunit/phpunit": "^9.5"
     }
 }

@@ -57,10 +57,9 @@ class LoginService
     {
         if(
             ($this->validation->validate($this->accountModel, $this->messageHelper)) &&
-            ($this->messageHelper->countMessageByType('danger') == 0))
-        {
+            ($this->messageHelper->countMessageByType('danger') == 0)
+        )
             return true;
-        }
 
         return false;
     }

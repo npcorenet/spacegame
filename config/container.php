@@ -20,7 +20,8 @@ $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\App\Helper\MessageHelper::class);
 
 $container->add(\App\Controller\ActivateAccountController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\MessageHelper::class);
 
 $container->add(\App\Controller\DashboardController::class)
     ->addArgument(\League\Plates\Engine::class)

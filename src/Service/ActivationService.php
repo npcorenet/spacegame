@@ -34,6 +34,7 @@ class ActivationService
 
         $this->tokenModel->setUser($tokenData['user']);
         $this->tokenModel->setId($tokenData['id']);
+        $this->tokenModel->setType($tokenData['type']);
         $this->tokenModel->setValidUntil($this->activateAccountService->stringToDateTime($tokenData['validUntil']));
 
         if($this->validate() === FALSE)

@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Helper\MessageHelper;
 use App\Interfaces\ControllerInterface;
 use App\Model\TokenModel;
-use App\Model\TokenTypeModel;
 use App\Service\ActivateAccountService;
 use App\Service\ActivationService;
 use App\Table\AccountTable;

@@ -2,29 +2,31 @@
 
 namespace App\Validation;
 
+use App\Helper\MessageHelper;
 use App\Model\TokenModel;
+use App\Model\TokenTypeModel;
 use App\Table\AccountTable;
 
 class TokenValidation
 {
 
-    public function __construct(
-        private TokenModel $tokenModel
-    )
-    {
-    }
-
-    public function validate(): array
+    public function validate(
+        TokenModel $tokenModel,
+        MessageHelper $messageHelper
+    ): self
     {
 
-        $messages = [];
-
-        if($this->tokenModel->getValidUntil() <= new \DateTime)
+        if($tokenModel->getValidUntil() <= new \DateTime)
         {
-            $messages[] = ['type' => 'danger', 'message' => 'Der Aktivierungsschlüssel ist bereits abgelaufen'];
+            $messageHelper->addMessage('danger', 'Der Aktivierungsschlüssel ist bereits abgelaufen');
         }
 
-        return $messages;
+        if($tokenModel->getType() !== TokenTypeModel::ActivateAccount)
+        {
+            $messageHelper->addMessage('danger', 'Der Aktivierungsschlüssel ist nicht für die Aktivierung von Konten');
+        }
+
+        return $this;
 
     }
 

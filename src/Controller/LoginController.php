@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Helper\MessageHelper;
 use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
 use App\Service\AccountService;
+use App\Service\LoginService;
 use App\Table\AccountTable;
 use App\Validation\LoginFieldValidation;
 use Envms\FluentPDO\Query;
@@ -20,7 +22,8 @@ class LoginController implements ControllerInterface
 
     public function __construct(
         protected Engine $engine,
-        protected Query $database
+        protected Query $database,
+        protected MessageHelper $messageHelper
     )
     {
     }
@@ -34,7 +37,7 @@ class LoginController implements ControllerInterface
             $this->post($request);
         }
 
-        $response->getBody()->write($this->engine->render('pages/authentication/login', ['messages' => $this->messages]));
+        $response->getBody()->write($this->engine->render('pages/authentication/login', ['messages' => $this->messageHelper->getMessageArray()]));
 
         return $response;
     }
@@ -51,41 +54,20 @@ class LoginController implements ControllerInterface
             $accountModel->setEmail($_POST['emailLogin']);
             $accountModel->setPassword($_POST['passwordLogin']);
 
-            $validation = new LoginFieldValidation($accountModel);
-            $valid = $validation->validate();
-
-            if(count($valid) > 0)
-            {
-                $this->messages[] = array_merge($valid, $this->messages);
-                return;
-            }
-
             $accountTable = new AccountTable($this->database);
-            $accountData = $accountTable->findByEmail($accountModel->getEmail());
-
-            if($accountData === FALSE || count($accountData) === 0)
-            {
-                $this->messages[] = ['type' => 'danger', 'message' => 'Es wurde kein Konto mit den angegebenen Daten gefunden'];
-                return;
-            }
-
             $accountService = new AccountService();
+            $validation = new LoginFieldValidation();
 
-            if($accountData['isActivated'] === 0)
-            {
-                $this->messages[] = ['type' => 'danger', 'message' => 'Das gesuchte Konto wurde noch nicht aktiviert.'];
-                return;
-            }
 
-            if($accountService->verifyPassword($accountModel->getPassword(), $accountData['password']))
-            {
-                $_SESSION['spacegame_loginId'] = $accountData['id'];
-                $this->messages[] = ['type' => 'success', 'message' => 'Die Anmeldung war erfolgreich.'];
-                header("Location: /dashboard/");
-                return;
-            }
+            $loginService = new LoginService(
+                $this->messageHelper,
+                $accountModel,
+                $accountTable,
+                $accountService,
+                $validation
+            );
 
-            $this->messages[] = ['type' => 'danger', 'message' => 'Es wurde kein Konto mit den angegebenen Daten gefunden'];
+            $loginService->login();
 
         }
     }

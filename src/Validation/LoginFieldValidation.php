@@ -2,33 +2,29 @@
 
 namespace App\Validation;
 
+use App\Helper\MessageHelper;
 use App\Model\AccountModel;
 
 class LoginFieldValidation
 {
 
-    public function __construct(
-        private AccountModel $accountModel
-    )
-    {
-    }
-
-    public function validate(): array
+    public function validate(
+        AccountModel $accountModel,
+        MessageHelper $messageHelper
+    ): self
     {
 
-        $messages = [];
-
-        if(empty($this->accountModel->getEmail()))
+        if(empty($accountModel->getEmail()))
         {
-            $messages[] = ['type' => 'danger', 'message' => 'Das E-Mail Feld darf nicht leer sein'];
+            $messageHelper->addMessage('danger', 'Das E-Mail Feld darf nicht leer sein');
         }
 
-        if(empty($this->accountModel->getPassword()))
+        if(empty($accountModel->getPassword()))
         {
-            $messages[] = ['type' => 'danger', 'message' => 'Das Password Feld darf nicht leer sein'];
+            $messageHelper->addMessage('danger', 'Das Passwort Feld darf nicht leer sein');
         }
 
-        return $messages;
+        return $this;
 
     }
 

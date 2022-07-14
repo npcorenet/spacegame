@@ -2,38 +2,27 @@
 
 namespace App\Service;
 
+use App\Helper\EmailHelper;
 use App\Model\AccountModel;
 use App\Model\TokenModel;
 use App\Model\TokenTypeModel;
 use App\Software;
 use App\Table\AccountTable;
 use App\Table\TokenTable;
-use League\Plates\Engine;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\PHPMailer;
 
 class ActivateAccountService
 {
 
     public function sendActivationMail(
-        PHPMailer $mailer,
+        EmailHelper $mailer,
         string $email,
         string $username,
         TokenModel $tokenModel,
-        Engine $engine
     ): bool
     {
-        try {
-            $mailer->addAddress($email, $username);
-            $mailer->isHTML(true);
-            $mailer->Subject = Software::TITLE . ':: Kontoaktivierung';
-            $mailer->Body = $engine->render('email/activation', ['token' => $tokenModel->getToken(), 'username' => $username]);
-            $mailer->AltBody = 'Aktivierungscode für dein Konto: ' . \App\Software::WEBPAGE_URI . '/account/activate?token=' . $tokenModel->getToken();
-            $mailer->send();
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
+
+        return $mailer->sendMail('activation', $email, Software::TITLE . ':: Kontoaktivierung', ['token' => $tokenModel->getToken(), 'username' => $username]);
+
     }
 
     public function generateActivationToken(

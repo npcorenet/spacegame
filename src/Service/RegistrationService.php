@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Helper\EmailHelper;
 use App\Helper\MessageHelper;
 use App\Model\AccountModel;
 use App\Table\AccountTable;
@@ -22,8 +23,7 @@ class RegistrationService
         private ActivateAccountService $activateAccountService,
         private TokenTable $tokenTable,
         private TokenService $tokenService,
-        private PHPMailer $mailer,
-        private Engine $templateEngine
+        private EmailHelper $mailer
     )
     {
     }
@@ -55,8 +55,7 @@ class RegistrationService
                 $this->mailer,
                 $this->accountModel->getEmail(),
                 $this->accountModel->getUsername(),
-                $token,
-                $this->templateEngine)
+                $token)
             )
             {
                 $this->messageHelper->addMessage('danger', 'Die Aktivierungs-Email konnte nicht versandt werden. Bitte kontaktiere den Support');
@@ -73,7 +72,7 @@ class RegistrationService
     private function verifyFields(): bool
     {
         return ($this->validation->validate($this->accountModel, $this->messageHelper)) &&
-            ($this->messageHelper->countMessageByType('danger') > 0);
+            ($this->messageHelper->countMessageByType('danger') === 0);
     }
 
 }

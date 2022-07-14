@@ -16,8 +16,8 @@ $container->add(\App\Controller\LoginController::class)
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\PHPMailer\PHPMailer\PHPMailer::class)
-    ->addArgument(\App\Helper\MessageHelper::class);
+    ->addArgument(\App\Helper\MessageHelper::class)
+    ->addArgument(\App\Helper\EmailHelper::class);
 
 $container->add(\App\Controller\ActivateAccountController::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
@@ -71,6 +71,10 @@ $container->add(\PHPMailer\PHPMailer\PHPMailer::class)
     ->addMethodCall('set', ['SMTPSecure', \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS]);
 
 $container->add(\App\Helper\MessageHelper::class);
+
+$container->add(\App\Helper\EmailHelper::class)
+    ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\PHPMailer\PHPMailer\PHPMailer::class);
 
 $strategy = (new \League\Route\Strategy\ApplicationStrategy())->setContainer($container);
 $router = (new \League\Route\Router())->setStrategy($strategy);

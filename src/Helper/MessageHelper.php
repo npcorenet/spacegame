@@ -31,10 +31,11 @@ class MessageHelper
         return $this->messages;
     }
 
-    public function clearMessageArray(): self
+    public function clearMessageArray(): array
     {
+        unset($this->messages);
         $this->messages = [];
-        return $this;
+        return $this->messages;
     }
 
 }

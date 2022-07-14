@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Helper\EmailHelper;
 use App\Helper\MessageHelper;
 use App\Interfaces\ControllerInterface;
 use App\Model\AccountModel;
@@ -9,15 +10,12 @@ use App\Service\AccountService;
 use App\Service\ActivateAccountService;
 use App\Service\RegistrationService;
 use App\Service\TokenService;
-use App\Software;
 use App\Table\AccountTable;
 use App\Table\TokenTable;
 use App\Validation\RegisterFieldValidation;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 use League\Plates\Engine;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -27,8 +25,8 @@ class RegisterController implements ControllerInterface
     public function __construct(
         protected Engine $templateEngine,
         protected Query $query,
-        protected PHPMailer $mailer,
-        protected MessageHelper $messageHelper
+        protected MessageHelper $messageHelper,
+        protected EmailHelper $mailer
     )
     {
     }
@@ -81,8 +79,7 @@ class RegisterController implements ControllerInterface
                 $activateAccountService,
                 $tokenTable,
                 $tokenService,
-                $this->mailer,
-                $this->templateEngine
+                $this->mailer
             );
 
             $registrationService->register();

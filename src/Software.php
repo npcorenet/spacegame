@@ -2,18 +2,23 @@
 
 namespace App;
 
+use Dotenv\Dotenv;
+
 class Software
 {
 
-    public const TITLE = 'Spacegame';
     public const VERSION = '0.0.1';
     public const VERSION_TYPE = 'dev';
-    public const DEV_ENVIRONMENT = true;
 
     public const REPO_URI = 'https://github.com/npcorenet/spacegame';
     public const CHANGELOG_URI = '';
 
-    # Software URL without / at the end
-    public const WEBPAGE_URI = 'https://spacegame.ddev.site';
+    public static function loadEnv(string $envLocation): void
+    {
+
+        $dotEnv = Dotenv::createMutable($envLocation);
+        $dotEnv->load();
+
+    }
 
 }

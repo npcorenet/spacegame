@@ -46,4 +46,26 @@ class MessageHelperTest extends TestCase
 
     }
 
+    public function testCanCountSpecificMessageType()
+    {
+        $messageHelper = new MessageHelper();
+
+        $expected[] = ['type' => 'danger', 'message' => 'Hello World1'];
+        $expected[] = ['type' => 'success', 'message' => 'Hello World2'];
+        $expected[] = ['type' => 'danger', 'message' => 'Hello World3'];
+        $expected[] = ['type' => 'danger', 'message' => 'Hello World4'];
+        $expected[] = ['type' => 'success', 'message' => 'Hello World5'];
+        $expected[] = ['type' => 'warning', 'message' => 'Hello World6'];
+
+        foreach ($expected as $item)
+        {
+            $messageHelper->addMessage($item['type'], $item['message']);
+        }
+
+        $this->assertSame(3, $messageHelper->countMessageByType('danger'));
+        $this->assertSame(2, $messageHelper->countMessageByType('success'));
+        $this->assertSame(1, $messageHelper->countMessageByType('warning'));
+
+    }
+
 }

@@ -8,11 +8,6 @@ use App\Table\AbstractTable;
 class AccountTable extends AbstractTable
 {
 
-    public function findByEmail(string $email): array|bool
-    {
-        return $this->query->from($this->getTableName())->where('email', $email)->fetch();
-    }
-
     public function insert(AccountModel $accountModel): bool|array
     {
 
@@ -25,6 +20,11 @@ class AccountTable extends AbstractTable
 
         return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
 
+    }
+
+    public function findByEmail(string $email): array|bool
+    {
+        return $this->query->from($this->getTableName())->where('email', $email)->fetch();
     }
 
     public function setActivated(int $status, int $userId): bool|array

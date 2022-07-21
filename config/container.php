@@ -53,21 +53,21 @@ $container->add(\League\Plates\Engine::class)
     ->addMethodCall('loadExtension', [\League\Plates\Extension\URI::class]);
 
 $container->add(PDO::class)
-    ->addArgument('mysql:host=db;dbname=db')
-    ->addArgument('db')
-    ->addArgument('db');
+    ->addArgument('mysql:host='.$_ENV['DB_HOST'].';dbname='.$_ENV['DB_NAME'])
+    ->addArgument($_ENV['DB_USER'])
+    ->addArgument($_ENV['DB_PASS']);
 
 $container->add(Envms\FluentPDO\Query::class)
     ->addArgument(PDO::class);
 
 $container->add(\PHPMailer\PHPMailer\PHPMailer::class)
     ->addMethodCall('isSMTP')
-    ->addMethodCall('set', ['Host', SMTP_HOST])
-    ->addMethodCall('set', ['Username', SMTP_USER])
-    ->addMethodCall('set', ['Password', SMTP_PASSWORD])
-    ->addMethodCall('set', ['Port', SMTP_PORT])
-    ->addMethodCall('set', [SMTP_DISPLAYMAIL, SMTP_DISPLAYNAME])
-    ->addMethodCall('set', ['SMTPAuth', SMTP_AUTH])
+    ->addMethodCall('set', ['Host', $_ENV['SMTP_HOST']])
+    ->addMethodCall('set', ['Username', $_ENV['SMTP_USER']])
+    ->addMethodCall('set', ['Password', $_ENV['SMTP_PASSWORD']])
+    ->addMethodCall('set', ['Port', $_ENV['SMTP_PORT']])
+    ->addMethodCall('set', [$_ENV['SMTP_DISPLAYMAIL'], $_ENV['SMTP_DISPLAYNAME']])
+    ->addMethodCall('set', ['SMTPAuth', $_ENV['SMTP_AUTH']])
     ->addMethodCall('set', ['SMTPSecure', \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS]);
 
 $container->add(\App\Helper\MessageHelper::class);

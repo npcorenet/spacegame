@@ -8,10 +8,10 @@
     <body>
     Hey <?= $this->e($username) ?>, <br>
 
-    Es fehlt nur noch ein Schritt zur Eröffnung deines Raumfahrtunternehmens. <br>
-    Klicke auf folgenden Link, um die Registrierung abzuschließen: <br>
+    <span>Es fehlt nur noch ein Schritt zur Eröffnung deines Raumfahrtunternehmens.</span> <br>
+    <span>Klicke auf folgenden Link, um die Registrierung abzuschließen:</span> <br>
 
-    <a href="<?= \App\Software::WEBPAGE_URI . '/account/activate?token=' . $this->e($token) ?>"><?= \App\Software::WEBPAGE_URI . '/account/activate?token=' . $this->e($token) ?></a>
+    <a href="<?= $_ENV['SOFTWARE_URI'] . '/account/activate?token=' . $this->e($token) ?>"><?= $_ENV['SOFTWARE_URI'] . '/account/activate?token=' . $this->e($token) ?></a>
 
     <br>
 

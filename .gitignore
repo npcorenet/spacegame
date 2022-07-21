@@ -4,3 +4,4 @@
 /config/mail.php
 /myreport/
 /public/test.php
+.env

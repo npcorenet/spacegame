@@ -11,7 +11,7 @@
 
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
-            <a href="/" class="h1"><?= \App\Software::TITLE ?></a>
+            <a href="/" class="h1"><?= $_ENV['SOFTWARE_TITLE'] ?></a>
         </div>
         <div class="card-body">
             <p class="login-box-msg">Melde dich an, um zu deinem Raumfahrtunternehmen zurückzukehren</p>

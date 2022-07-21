@@ -21,7 +21,7 @@ class ActivateAccountService
     ): bool
     {
 
-        return $mailer->sendMail('activation', $email, Software::TITLE . ':: Kontoaktivierung', ['token' => $tokenModel->getToken(), 'username' => $username]);
+        return $mailer->sendMail('activation', $email, $_ENV['SOFTWARE_TITLE'] . ':: Kontoaktivierung', ['token' => $tokenModel->getToken(), 'username' => $username]);
 
     }
 

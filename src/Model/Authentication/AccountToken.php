@@ -66,4 +66,14 @@ class AccountToken
         $this->created = $created;
     }
 
+    public function getCreatorIp(): string
+    {
+        return $this->creatorIp;
+    }
+
+    public function setCreatorIp(string $creatorIp): void
+    {
+        $this->creatorIp = $creatorIp;
+    }
+
 }

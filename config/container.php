@@ -14,6 +14,9 @@ $container->add(\App\Controller\IndexController::class);
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
+$container->add(\App\Controller\LoginController::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
 /*
  *
  * Software Related

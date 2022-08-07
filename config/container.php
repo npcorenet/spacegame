@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 $container = new \League\Container\Container();
 
@@ -20,7 +21,7 @@ $container->add(\App\Controller\RegisterController::class)
  * */
 
 $container->add(PDO::class)
-    ->addArgument('mysql:host='.$_ENV['DB_HOST'].';dbname='.$_ENV['DB_NAME'])
+    ->addArgument('mysql:host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'])
     ->addArgument($_ENV['DB_USER'])
     ->addArgument($_ENV['DB_PASS']);
 

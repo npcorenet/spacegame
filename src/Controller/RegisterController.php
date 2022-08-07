@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -9,24 +11,21 @@ use App\Validation\RegisterFields;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 class RegisterController
 {
 
     private array $data = [];
 
-    public function __construct(private Query $database)
+    public function __construct(private readonly Query $database)
     {
     }
 
-    public function load(RequestInterface $request)
+    public function load(RequestInterface $request): Response
     {
-
         $response = new Response();
 
-        if($request->getMethod() !== 'POST')
-        {
+        if ($request->getMethod() !== 'POST') {
             $this->data['message'] = 'This requires to be called with POST';
             $this->data['code'] = 400;
 
@@ -35,20 +34,16 @@ class RegisterController
             return $response->withStatus($this->data['code'] ?? 500);
         }
 
-        $this->processPost($request, $response);
-
+        $this->processPost();
 
         $response->getBody()->write(json_encode($this->data));
 
         return $response->withStatus($this->data['code'] ?? 500);
-
     }
 
-    public function processPost(RequestInterface $request, ResponseInterface $response): void
+    public function processPost(): void
     {
-
-        if(!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password']))
-        {
+        if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password'])) {
             $this->data = ['code' => 400, 'message' => 'Please make sure, that all required data is sent!'];
             return;
         }
@@ -60,8 +55,7 @@ class RegisterController
 
         $validateFields = new RegisterFields();
 
-        if(!empty($validateData = $validateFields->validate($account)))
-        {
+        if (!empty($validateData = $validateFields->validate($account))) {
             $this->data = $validateData;
             return;
         }
@@ -72,8 +66,6 @@ class RegisterController
         );
 
         $this->data = $service->register();
-        return;
-
     }
 
 }

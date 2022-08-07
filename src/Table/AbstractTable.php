@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Table;
 
@@ -12,7 +14,7 @@ class AbstractTable
 
     public function __construct(public Query $query)
     {
-        $this->table = substr((new ReflectionClass($this))->getShortName(), 0, -5  );
+        $this->table = substr((new ReflectionClass($this))->getShortName(), 0, -5);
     }
 
     public function getTableName(): string

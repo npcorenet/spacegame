@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Controller;
 
@@ -13,12 +14,10 @@ class IndexControllerTest extends TestCase
 
     public function testLoadReturnsResponseInterface()
     {
-
         $request = new Request();
 
         $indexController = new IndexController();
         $this->assertInstanceOf(ResponseInterface::class, $indexController->load($request));
-
     }
 
 }

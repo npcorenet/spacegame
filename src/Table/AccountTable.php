@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Table;
 
@@ -20,9 +22,7 @@ class AccountTable extends AbstractTable
 
     public function findByEmail(string $email): bool|array
     {
-
         return $this->query->from($this->getTableName())->where('email', $email)->fetch();
-
     }
 
 }

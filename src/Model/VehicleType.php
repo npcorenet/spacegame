@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Model;
 
@@ -98,7 +100,7 @@ class VehicleType
      */
     public function setVehicleData(string $vehicleData): void
     {
-        if(!is_object(json_decode($vehicleData))){
+        if (!is_object(json_decode($vehicleData))) {
             throw new InvalidFormatException('Invalid JSON Format', 1);
         }
 

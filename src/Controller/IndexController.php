@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -16,15 +18,19 @@ class IndexController
 
     public function load(RequestInterface $request): ResponseInterface
     {
-
         $response = new Response();
 
-        $response->getBody()->write(json_encode(
-            ['version' => Software::VERSION, 'build' => Software::VERSION_CODE, 'development' => (bool)$_ENV['SOFTWARE_INDEV']]
-        ));
+        $response->getBody()->write(
+            json_encode(
+                [
+                    'version' => Software::VERSION,
+                    'build' => Software::VERSION_CODE,
+                    'development' => (bool)$_ENV['SOFTWARE_INDEV']
+                ]
+            )
+        );
 
         return $response->withStatus(200);
-
     }
 
 }

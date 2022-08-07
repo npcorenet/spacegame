@@ -1,7 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 $request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals(
-    $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
+    $_SERVER,
+    $_GET,
+    $_POST,
+    $_COOKIE,
+    $_FILES
 );
 
 $router->get('/', 'App\Controller\IndexController::load');

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App;
 
@@ -12,10 +14,8 @@ class Software
 
     public static function loadEnvironmentFile(string $environmentFileLocation): void
     {
-
         $dotEnv = Dotenv::createMutable($environmentFileLocation);
         $dotEnv->load();
-
     }
 
 }

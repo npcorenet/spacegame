@@ -1,89 +1,71 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Helper\EmailHelper;
-use App\Helper\MessageHelper;
-use App\Interfaces\ControllerInterface;
-use App\Model\AccountModel;
-use App\Service\AccountService;
-use App\Service\ActivateAccountService;
-use App\Service\RegistrationService;
-use App\Service\TokenService;
+use App\Model\Authentication\Account;
+use App\Service\RegisterService;
 use App\Table\AccountTable;
-use App\Table\TokenTable;
-use App\Validation\RegisterFieldValidation;
+use App\Validation\RegisterFields;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
-use League\Plates\Engine;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\RequestInterface;
 
-class RegisterController implements ControllerInterface
+class RegisterController
 {
 
-    public function __construct(
-        protected Engine $templateEngine,
-        protected Query $query,
-        protected MessageHelper $messageHelper,
-        protected EmailHelper $mailer
-    )
+    private array $data = [];
+
+    public function __construct(private readonly Query $database)
     {
     }
 
-    public function get(ServerRequestInterface $request): ResponseInterface
+    public function load(RequestInterface $request): Response
     {
         $response = new Response();
 
-        if($request->getMethod() === 'POST'){
+        if ($request->getMethod() !== 'POST') {
+            $this->data['message'] = 'This requires to be called with POST';
+            $this->data['code'] = 400;
 
-            $this->post($request);
+            $response->getBody()->write(json_encode($this->data));
 
+            return $response->withStatus($this->data['code'] ?? 500);
         }
 
-        $response->getBody()->write($this->templateEngine->render('pages/authentication/register', ['messages' => $this->messageHelper->getMessageArray()]));
+        $this->processPost();
 
-        return $response;
+        $response->getBody()->write(json_encode($this->data));
+
+        return $response->withStatus($this->data['code'] ?? 500);
     }
 
-    public function post(ServerRequestInterface $request)
+    public function processPost(): void
     {
-
-        if(isset($_POST['companyNameRegister'],
-            $_POST['emailRegister'],
-            $_POST['passwordRegister'])
-        )
-        {
-
-            $accountModel = new AccountModel();
-            $accountModel->setUsername($_POST['companyNameRegister']);
-            $accountModel->setEmail($_POST['emailRegister']);
-            $accountModel->setPassword($_POST['passwordRegister']);
-            $accountModel->setAcceptedTerms(isset($_POST['termsRegisterAccept']));
-
-            $accountTable = new AccountTable($this->query);
-            $accountService = new AccountService();
-            $validation = new RegisterFieldValidation();
-            $activateAccountService = new ActivateAccountService();
-            $tokenTable = new TokenTable($this->query);
-            $tokenService = new TokenService();
-            $validation = new RegisterFieldValidation();
-
-
-            $registrationService = new RegistrationService(
-                $validation,
-                $this->messageHelper,
-                $accountModel,
-                $accountTable,
-                $accountService,
-                $activateAccountService,
-                $tokenTable,
-                $tokenService,
-                $this->mailer
-            );
-
-            $registrationService->register();
+        if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password'])) {
+            $this->data = ['code' => 400, 'message' => 'Please make sure, that all required data is sent!'];
+            return;
         }
 
+        $account = new Account();
+        $account->setEmail($_POST['email']);
+        $account->setName($_POST['username']);
+        $account->setPassword($_POST['password']);
+
+        $validateFields = new RegisterFields();
+
+        if (!empty($validateData = $validateFields->validate($account))) {
+            $this->data = $validateData;
+            return;
+        }
+
+        $service = new RegisterService(
+            $account,
+            new AccountTable($this->database)
+        );
+
+        $this->data = $service->register();
     }
+
 }

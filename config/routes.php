@@ -1,26 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 $request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals(
-    $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
+    $_SERVER,
+    $_GET,
+    $_POST,
+    $_COOKIE,
+    $_FILES
 );
 
-$router->get('/login', 'App\Controller\LoginController::get');
-$router->post('/login', 'App\Controller\LoginController::get');
-$router->get('/register', 'App\Controller\RegisterController::get');
-$router->post('/register', 'App\Controller\RegisterController::get');
-$router->get('/account/activate', 'App\Controller\ActivateAccountController::get');
+$router->get('/', 'App\Controller\IndexController::load');
 
-$router->get('/dashboard', 'App\Controller\DashboardController::get');
+$router->get('/auth/register', 'App\Controller\RegisterController::load');
+$router->post('/auth/register', 'App\Controller\RegisterController::load');
 
-$router->get('/404', 'App\Controller\NotFoundController::get');
+$router->get('/auth/login', 'App\Controller\LoginController::load');
+$router->post('/auth/login', 'App\Controller\LoginController::load');
 
-
-$router->get('/admin/info', 'App\Controller\Admin\InfoController::get');
-
-try {
-    $response = $router->dispatch($request);
-    (new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);
-} catch(\League\Route\Http\Exception\NotFoundException $exception) {
-    header("Location: /404");
-    die();
-}
+$response = $router->dispatch($request);
+(new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);

@@ -1,67 +1,64 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Service;
 
-use App\Helper\MessageHelper;
-use App\Model\AccountModel;
+use App\Helper\TokenHelper;
+use App\Model\Authentication\Account;
+use App\Model\Authentication\AccountToken;
 use App\Table\AccountTable;
-use App\Validation\LoginFieldValidation;
+use App\Table\AccountTokenTable;
+use DateTime;
 
 class LoginService
 {
 
     public function __construct(
-        protected MessageHelper $messageHelper,
-        protected AccountModel $accountModel,
-        protected AccountTable $accountTable,
-        protected AccountService $accountService,
-        protected LoginFieldValidation $validation
-    )
-    {
+        private readonly Account $account,
+        private readonly AccountTable $accountTable,
+        private readonly TokenHelper $tokenHelper,
+        private readonly AccountTokenTable $accountTokenTable
+    ) {
     }
 
-    public function login(): bool
+    public function login(): array
     {
-
-        if($this->verifyFields() === FALSE)
-            return false;
-
-        $accountData = $this->accountTable->findByEmail($this->accountModel->getEmail());
-
-        if($accountData === FALSE || count($accountData) === 0)
-        {
-            $this->messageHelper->addMessage('danger', 'Es wurde kein Konto mit den angegeben Daten gefunden');
-            return false;
+        $data = $this->accountTable->findByEmail($this->account->getEmail());
+        if ($data === false) {
+            return ['code' => 404, 'message' => 'account-not-found'];
         }
 
-        if($accountData['isActivated'] === 0)
-        {
-            $this->messageHelper->addMessage('danger', 'Das Konto wurde noch nicht aktiviert.');
-            return false;
+        if (!password_verify($this->account->getPassword(), $data['password'])) {
+            return ['code' => 403, 'message' => 'account-password-wrong'];
         }
 
-        if($this->accountService->verifyPassword($this->accountModel->getPassword(), $accountData['password']))
-        {
-            $_SESSION['spacegame_loginId'] = $accountData['id'];
-            $this->messageHelper->addMessage('success', 'Das Anmeldung war erfolgreich');
-            header("Location: /dashboard/");
-            return true;
+        if ($data['active'] === 1) {
+            return [
+                'code' => 200,
+                'message' => 'login-successful',
+                'accountInfo' => [
+                    'id' => $data['id'],
+                    'name' => $data['name'],
+                    'registered' => $data['registered'],
+                    'session' => $this->createToken($data['id'], $this->tokenHelper)
+                ]
+            ];
         }
 
-        $this->messageHelper->addMessage('danger', 'Es wurde kein Konto mit den angegeben Daten gefunden');
-        return false;
-
+        return ['code' => 403, 'message' => 'account-not-activated'];
     }
 
-    private function verifyFields(): bool
+    private function createToken(int $id, TokenHelper $helper): string
     {
-        if(
-            ($this->validation->validate($this->accountModel, $this->messageHelper)) &&
-            ($this->messageHelper->countMessageByType('danger') == 0)
-        )
-            return true;
+        $token = new AccountToken();
+        $token->setUserId($id);
+        $token->setToken($helper->generateToken(32));
+        $token->setCreated(new DateTime());
+        $token->setValidUntil((new DateTime())->modify('+ 30 days'));
+        $token->setCreatorIp($_SERVER['REMOTE_ADDR']);
 
-        return false;
+        $this->accountTokenTable->insert($token);
+
+        return $token->getToken();
     }
 
 }

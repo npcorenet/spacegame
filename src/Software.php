@@ -8,15 +8,12 @@ class Software
 {
 
     public const VERSION = '0.0.1';
-    public const VERSION_TYPE = 'dev';
+    public const VERSION_CODE = 'dev';
 
-    public const REPO_URI = 'https://github.com/npcorenet/spacegame';
-    public const CHANGELOG_URI = '';
-
-    public static function loadEnv(string $envLocation): void
+    public static function loadEnvironmentFile(string $environmentFileLocation): void
     {
 
-        $dotEnv = Dotenv::createMutable($envLocation);
+        $dotEnv = Dotenv::createMutable($environmentFileLocation);
         $dotEnv->load();
 
     }

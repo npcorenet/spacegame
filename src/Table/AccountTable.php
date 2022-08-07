@@ -2,34 +2,27 @@
 
 namespace App\Table;
 
-use App\Model\AccountModel;
-use App\Table\AbstractTable;
+use App\Model\Authentication\Account;
 
 class AccountTable extends AbstractTable
 {
 
-    public function insert(AccountModel $accountModel): bool|array
+    public function insert(Account $account): bool|array
     {
-
-        $values =
-            [
-                'email' => $accountModel->getEmail(),
-                'password' => $accountModel->getPassword(),
-                'username' => $accountModel->getUsername()
-            ];
+        $values = [
+            'email' => $account->getEmail(),
+            'name' => $account->getName(),
+            'password' => $account->getPassword()
+        ];
 
         return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
-
     }
 
-    public function findByEmail(string $email): array|bool
+    public function findByEmail(string $email): bool|array
     {
+
         return $this->query->from($this->getTableName())->where('email', $email)->fetch();
-    }
 
-    public function setActivated(int $status, int $userId): bool|array
-    {
-        return $this->query->update($this->getTableName())->set('isActivated', $status)->where('id', $userId)->execute() > 0;
     }
 
 }

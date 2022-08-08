@@ -9,7 +9,7 @@ class RegisterFields
 
     public function validate(Account $account): array
     {
-        if (!filter_var($account->getEmail()) == FILTER_VALIDATE_EMAIL) {
+        if (!filter_var($account->getEmail(), FILTER_VALIDATE_EMAIL)) {
             return ['code' => 400, 'message' => 'email-invalid'];
         }
 

@@ -19,5 +19,7 @@ $router->post('/auth/login', 'App\Controller\LoginController::load');
 
 $router->get('/account', 'App\Controller\AccountController::load');
 
+$router->get('/space', 'App\Controller\SpaceController::load');
+
 $response = $router->dispatch($request);
 (new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);

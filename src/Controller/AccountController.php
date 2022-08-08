@@ -27,7 +27,7 @@ class AccountController
         }
 
         $tokenTable = new AccountTokenTable($this->query);
-        $tokenData = (new TokenHelper())->verifyAccountToken($token, $tokenTable);
+        $tokenData = (new TokenHelper())->verifyAccountTokenAndGetData($token, $tokenTable);
 
         if (empty($tokenData)) {
             $this->data = ['code' => 403, 'message' => 'invalid-token'];

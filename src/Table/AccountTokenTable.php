@@ -21,4 +21,9 @@ class AccountTokenTable extends AbstractTable
         return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
     }
 
+    public function findUserByToken(string $token): bool|array
+    {
+        return $this->query->from($this->getTableName())->where('token', $token)->fetch();
+    }
+
 }

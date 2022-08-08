@@ -16,15 +16,6 @@ class RegisterControllerTest extends TestCase
 
     private Query $database;
 
-    protected function setUp(): void
-    {
-        $this->database = $this->createMock(Query::class);
-
-        Software::loadEnvironmentFile(__DIR__ . '/../../', '.env.example');
-
-        parent::setUp();
-    }
-
     public function testLoadReturnsResponseInterface()
     {
         $request = new Request();
@@ -86,7 +77,6 @@ class RegisterControllerTest extends TestCase
         $_POST = null;
     }
 
-
     public function testPostLoadWithEmptyUsernameReturnsError()
     {
         $_POST = null;
@@ -144,6 +134,15 @@ class RegisterControllerTest extends TestCase
         $this->assertJson((string)$response->getBody());
         $this->assertSame($expected, (string)$response->getBody());
         $_POST = null;
+    }
+
+    protected function setUp(): void
+    {
+        $this->database = $this->createMock(Query::class);
+
+        Software::loadEnvironmentFile(__DIR__ . '/../../', '.env.example');
+
+        parent::setUp();
     }
 
 }

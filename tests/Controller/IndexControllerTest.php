@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Controller;
@@ -32,9 +33,11 @@ class IndexControllerTest extends TestCase
     {
         $expected =
             json_encode(
-                ['version' => Software::VERSION,
-                'build' => Software::VERSION_CODE,
-                'development' => (bool)$_ENV['SOFTWARE_INDEV']]
+                [
+                    'version' => Software::VERSION,
+                    'build' => Software::VERSION_CODE,
+                    'development' => (bool)$_ENV['SOFTWARE_INDEV']
+                ]
             );
 
         $request = new Request();

@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
-use App\Controller\LoginController;
 use App\Controller\RegisterController;
 use App\Software;
 use Envms\FluentPDO\Query;
@@ -19,7 +20,7 @@ class RegisterControllerTest extends TestCase
     {
         $this->database = $this->createMock(Query::class);
 
-        Software::loadEnvironmentFile(__DIR__.'/../../', '.env.example');
+        Software::loadEnvironmentFile(__DIR__ . '/../../', '.env.example');
 
         parent::setUp();
     }
@@ -113,7 +114,9 @@ class RegisterControllerTest extends TestCase
         $_POST['username'] = 'Test';
         $_POST['password'] = '';
 
-        $expected = json_encode(['code' => 400, 'message' => 'password-minimum-length-'.$_ENV['SOFTWARE_MIN_PASSWORD_LENGTH']]);
+        $expected = json_encode(
+            ['code' => 400, 'message' => 'password-minimum-length-' . $_ENV['SOFTWARE_MIN_PASSWORD_LENGTH']]
+        );
 
         $registerController = new RegisterController($this->database);
         $response = $registerController->load($request);

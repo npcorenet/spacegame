@@ -13,7 +13,7 @@ class LoginFields
 
     public function validate(): array
     {
-        if (!filter_var($this->account->getEmail()) == FILTER_VALIDATE_EMAIL) {
+        if (!filter_var($this->account->getEmail(), FILTER_VALIDATE_EMAIL)) {
             return ['code' => 400, 'message' => 'email-invalid'];
         }
 

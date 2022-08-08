@@ -22,7 +22,7 @@ class SpaceController extends AbstractController
         $solarSystemTable = new SolarSystemTable($this->database);
         $solarData = $solarSystemTable->findAll();
 
-        if(!file_exists(__DIR__.'/../../cache/planets.json'))
+        if(!file_exists(CACHE_DIR.'/planets.json'))
         {
 
             foreach ($solarData as $solar) {

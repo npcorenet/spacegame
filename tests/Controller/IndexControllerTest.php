@@ -7,19 +7,11 @@ namespace Controller;
 use App\Controller\IndexController;
 use App\Software;
 use Laminas\Diactoros\Request;
-use Laminas\Diactoros\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
 class IndexControllerTest extends TestCase
 {
-
-    protected function setUp(): void
-    {
-        $_ENV['SOFTWARE_INDEV'] = true;
-
-        parent::setUp();
-    }
 
     public function testLoadReturnsResponseInterface()
     {
@@ -46,6 +38,13 @@ class IndexControllerTest extends TestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame($expected, (string)$response->getBody());
+    }
+
+    protected function setUp(): void
+    {
+        $_ENV['SOFTWARE_INDEV'] = true;
+
+        parent::setUp();
     }
 
 }

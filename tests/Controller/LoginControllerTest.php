@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Controller;
@@ -13,13 +14,6 @@ class LoginControllerTest extends TestCase
 {
 
     private Query $database;
-
-    protected function setUp(): void
-    {
-        $this->database = $this->createMock(Query::class);
-
-        parent::setUp();
-    }
 
     public function testLoadReturnsResponseInterface()
     {
@@ -115,6 +109,13 @@ class LoginControllerTest extends TestCase
         $this->assertJson((string)$response->getBody());
         $this->assertSame($expected, (string)$response->getBody());
         $_POST = null;
+    }
+
+    protected function setUp(): void
+    {
+        $this->database = $this->createMock(Query::class);
+
+        parent::setUp();
     }
 
 }

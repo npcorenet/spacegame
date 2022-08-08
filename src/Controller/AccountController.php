@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -20,11 +21,18 @@ class AccountController
 
     public function load(RequestInterface $request): Response
     {
-        $token = $request->getHeaderLine('x-api-key') ?? null;
+        $token = null;
+        if (isset($_SERVER['HTTP_X_API_KEY'])) {
+            $token = $_SERVER['HTTP_X_API_KEY'];
+        }
 
         $tokenTable = new AccountTokenTable($this->query);
-
         $tokenData = (new TokenHelper())->verifyAccountToken($token, $tokenTable);
+
+        if (empty($tokenData)) {
+            $this->data = ['code' => 403, 'message' => 'invalid-token'];
+            return $this->response();
+        }
 
         $userData = (new AccountTable($this->query))->findById($tokenData['userId']);
         $userData['tokenValidUntil'] = $tokenData['validUntil'];

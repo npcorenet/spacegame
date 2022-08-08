@@ -22,22 +22,36 @@ class SpaceController extends AbstractController
         $solarSystemTable = new SolarSystemTable($this->database);
         $solarData = $solarSystemTable->findAll();
 
-        foreach ($solarData as $solar) {
-            $spaceData[$solar['id']] = $solar;
-            unset($spaceData[$solar['id']]['id']);
+        if(!file_exists(__DIR__.'/../../cache/planets.json'))
+        {
 
-            $planetTable = new PlanetTable($this->database);
-            $planets = $planetTable->findPlanetsBySolarId($solar['id']);
-            foreach ($planets as $planet) {
-                $spaceData[$solar['id']]['planets'][$planet['id']] = $planet;
-                foreach ($planetTable->findMoonsByPlanetId($planet['id']) as $moon) {
-                    $spaceData[$solar['id']]['planets'][$planet['id']]['moons'][$moon['id']] = $moon;
-                    unset($spaceData[$solar['id']]['planets'][$planet['id']]['moons'][$moon['id']]['id']);
+            foreach ($solarData as $solar) {
+                $spaceData[$solar['id']] = $solar;
+                unset($spaceData[$solar['id']]['id']);
+
+                $planetTable = new PlanetTable($this->database);
+                $planets = $planetTable->findPlanetsBySolarId($solar['id']);
+                foreach ($planets as $planet) {
+                    $spaceData[$solar['id']]['planets'][$planet['id']] = $planet;
+                    foreach ($planetTable->findMoonsByPlanetId($planet['id']) as $moon) {
+                        $spaceData[$solar['id']]['planets'][$planet['id']]['moons'][$moon['id']] = $moon;
+                        unset($spaceData[$solar['id']]['planets'][$planet['id']]['moons'][$moon['id']]['id']);
+                    }
+
+                    unset($spaceData[$solar['id']]['planets'][$planet['id']]['id']);
                 }
-
-                unset($spaceData[$solar['id']]['planets'][$planet['id']]['id']);
             }
+
+            file_put_contents(CACHE_DIR.'/planets.json', json_encode($spaceData));
+
+            $this->data = ['code' => 200, 'message' => self::CODE200, 'data' => $spaceData];
+
+            return $this->response();
+
         }
+
+        $spaceData = file_get_contents(CACHE_DIR.'/planets.json');
+        $spaceData = json_decode($spaceData);
 
         $this->data = ['code' => 200, 'message' => self::CODE200, 'data' => $spaceData];
 

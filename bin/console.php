@@ -1,6 +1,6 @@
 <?php
 
-function cacheClear()
+function cacheClear(): void
 {
     echo 'Clearing Cache started...' . PHP_EOL;
 
@@ -15,7 +15,7 @@ function cacheClear()
     echo 'Cache cleared sucessfully! Files deleted: ' . $count . PHP_EOL;
 }
 
-function baseInstall()
+function baseInstall(): void
 {
     echo 'Downloading Composer...' . PHP_EOL;
 
@@ -44,11 +44,10 @@ function baseInstall()
     return;
 }
 
-function debugInfo()
+function debugInfo(): void
 {
     var_dump($_SERVER);
 }
-
 
 $commandList['cache:clear'] = [
     'description' => 'Clear Cache Directory. Cache has to be rebuilt!',

@@ -13,7 +13,6 @@ class SpaceController extends AbstractController
 
     public function load(): Response
     {
-        $spaceData = [];
 
         if (!$this->isAuthenticatedAndValid()) {
             $this->data = ['code' => 403, 'message' => parent::ERROR403];

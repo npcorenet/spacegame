@@ -13,7 +13,9 @@ class AbstractController
 {
 
     public const ERROR403 = 'invalid-token';
+    public const ERROR400_DATA_MISSING = 'missing-data';
     public const CODE200 = 'success';
+
     public string $token;
     public array $data = [];
     private int $userId = 0;

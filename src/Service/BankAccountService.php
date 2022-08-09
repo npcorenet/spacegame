@@ -31,4 +31,15 @@ class BankAccountService
         return $address;
     }
 
+    public function calculateNewMoney(int $current, int $change, bool $deptAllowed = false): int|bool
+    {
+        $new = $current + $change;
+        if((!$deptAllowed) && $new < 0)
+        {
+            return false;
+        }
+
+        return $new;
+    }
+
 }

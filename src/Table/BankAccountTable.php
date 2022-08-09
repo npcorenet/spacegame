@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Table;
 
 use App\Model\Finances\BankAccount;
+use Envms\FluentPDO\Exception;
 
 class BankAccountTable extends AbstractTable
 {
@@ -45,6 +46,13 @@ class BankAccountTable extends AbstractTable
         $where = ['address' => $address, 'user' => $userId];
 
         return $this->query->delete($this->getTableName())->where($where)->execute() == 1;
+    }
+
+    public function updateAccountMoneyById(int $id, int $value): bool|int
+    {
+        $set = ['money' => $value];
+
+        return $this->query->update($this->getTableName(),$set, $id)->execute();
     }
 
 }

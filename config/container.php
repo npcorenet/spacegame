@@ -26,6 +26,9 @@ $container->add(\App\Controller\SpaceController::class)
 $container->add(\App\Controller\BankController::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
+$container->add(\App\Controller\TransactionController::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
 /*
  *
  * Software Related

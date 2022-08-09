@@ -22,6 +22,7 @@ $router->get('/account', 'App\Controller\AccountController::load');
 $router->get('/space', 'App\Controller\SpaceController::load');
 
 $router->get('/bank', 'App\Controller\BankController::load');
+$router->post('/bank/create', 'App\Controller\BankController::create');
 
 $response = $router->dispatch($request);
 (new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);

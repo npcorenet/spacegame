@@ -2,6 +2,8 @@
 
 namespace App\Helper;
 
+use App\Model\Finances\BankAccount;
+use App\Service\BankAccountService;
 use App\Table\AccountTokenTable;
 use DateTime;
 

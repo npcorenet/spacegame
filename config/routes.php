@@ -24,6 +24,8 @@ $router->get('/space', 'App\Controller\SpaceController::load');
 $router->get('/bank', 'App\Controller\BankController::load');
 $router->post('/bank/create', 'App\Controller\BankController::create');
 $router->get('/bank/{address}', 'App\Controller\BankController::show');
+$router->delete('/bank/{address}', 'App\Controller\BankController::delete');
+$router->delete('/bank/{address}/{token}', 'App\Controller\BankController::delete');
 
 $response = $router->dispatch($request);
 (new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);

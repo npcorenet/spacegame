@@ -17,7 +17,7 @@ class BankAccountTable extends AbstractTable
             'defaultAccount' => $bankAccount->isDefaultAccount() ? 1 : 0
         ];
 
-        return $this->query->insertInto($this->getTableName())->values($values)->execute();
+        return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
     }
 
     public function findAllByUserId(int $userId): bool|array
@@ -29,7 +29,9 @@ class BankAccountTable extends AbstractTable
 
     public function findByAddress(string $address): bool|array
     {
-        return $this->query->from($this->getTableName())->where('address', $address)->fetch();
+        $where = ['address' => $address];
+
+        return $this->query->from($this->getTableName())->where($where)->fetch();
     }
 
     public function findByAddressAndUserId(string $address, int $userId): bool|array
@@ -37,6 +39,13 @@ class BankAccountTable extends AbstractTable
         $where = ['address' => $address, 'user' => $userId];
 
         return $this->query->from($this->getTableName())->where($where)->fetch();
+    }
+
+    public function deleteByAddressAndUserId(string $address, int $userId): bool|array
+    {
+        $where = ['address' => $address, 'user' => $userId];
+
+        return $this->query->delete($this->getTableName())->where($where)->execute() == 1;
     }
 
 }

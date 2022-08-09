@@ -119,4 +119,50 @@ class BankController extends AbstractController
         return $this->response();
     }
 
+    public function delete(RequestInterface $request, array $args): Response
+    {
+        $userId = $this->isAuthenticatedAndValid();
+        if ($userId === FALSE) {
+            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+            return $this->response();
+        }
+
+        if(!isset($args['token']) || !isset($args['address']))
+        {
+            $this->data = ['code' => 400, 'message' => 'missing-arguments'];
+            return $this->response();
+        }
+
+        $bankAccountTable = new BankAccountTable($this->database);
+        $accountList = $bankAccountTable->findAllByUserId($userId);
+        $tokenList = $bankAccountTable->findByAddress($args['address']);
+        if(($accountList === FALSE) || ($tokenList === FALSE))
+        {
+            $this->data = ['code' => 404, 'message' => 'bank-account-not-found'];
+            return $this->response();
+        }
+
+        if($args['token'] !== $this->token)
+        {
+            $this->data = ['code' => 409, 'message' => 'confirmation-required'];
+            return $this->response();
+        }
+
+        if(count($accountList) <= 1)
+        {
+            $this->data = ['code' => 401, 'message' => 'one-account-required'];
+            return $this->response();
+        }
+
+        if(!$bankAccountTable->deleteByAddressAndUserId($args['address'], $userId))
+        {
+            $this->data = ['code' => 500, 'message' => 'unknown-error'];
+            return $this->response();
+        }
+
+        $this->data = ['code' => 200, 'message' => 'success'];
+
+        return $this->response();
+    }
+
 }

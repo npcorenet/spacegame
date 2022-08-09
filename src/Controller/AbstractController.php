@@ -7,7 +7,6 @@ use App\Table\AccountTable;
 use App\Table\AccountTokenTable;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
-use phpDocumentor\Reflection\Types\This;
 
 class AbstractController
 {
@@ -16,6 +15,7 @@ class AbstractController
     public const CODE200 = 'success';
 
     private int $userId = 0;
+    public string $token;
     public array $data = [];
     private array $userData = [];
 
@@ -36,6 +36,7 @@ class AbstractController
         $accountTokenData = $accountTokenTable->findUserByToken($token);
         if ($accountTokenData !== FALSE) {
             $this->userId = $accountTokenData['userId'];
+            $this->token = $token;
             return $accountTokenData['userId'];
         }
 

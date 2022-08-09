@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Table;
 
 use App\Model\Finances\BankAccount;
-use Envms\FluentPDO\Exception;
 
 class BankAccountTable extends AbstractTable
 {

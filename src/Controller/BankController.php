@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -90,9 +91,32 @@ class BankController extends AbstractController
 
     }
 
-    public function delete(RequestInterface $request)
+    public function show(RequestInterface $request, array $args): Response
     {
+        $userId = $this->isAuthenticatedAndValid();
+        if ($userId === FALSE) {
+            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+            return $this->response();
+        }
 
+        if(!isset($args['address']))
+        {
+            $this->data = ['code' => 400, 'message' => 'missing-arguments'];
+            return $this->response();
+        }
+
+        $bankAccountTable = new BankAccountTable($this->database);
+        $bankAccountData = $bankAccountTable->findByAddressAndUserId($args['address'], $userId);
+
+        if($bankAccountData === FALSE)
+        {
+            $this->data = ['code' => 404, 'message' => 'bank-account-not-found'];
+            return $this->response();
+        }
+
+        $this->data = ['code' => 200, 'message' => self::CODE200, 'data' => $bankAccountData];
+
+        return $this->response();
     }
 
 }

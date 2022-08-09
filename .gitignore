@@ -6,3 +6,4 @@
 /public/test.php
 .env
 /.phpunit.cache/
+phpmetrics/

@@ -13,7 +13,7 @@ class TokenHelper
         return bin2hex(openssl_random_pseudo_bytes($tokenLength));
     }
 
-    public function verifyAccountToken(mixed $token, AccountTokenTable $tokenTable): array
+    public function verifyAccountTokenAndGetData(mixed $token, AccountTokenTable $tokenTable): array
     {
         if ($token === null) {
             return [];

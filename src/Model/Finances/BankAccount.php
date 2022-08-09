@@ -12,6 +12,7 @@ class BankAccount
     protected int $id;
     protected int $user;
     protected string $address;
+    protected string $name;
     protected int $dailyMaximum;
     protected DateTime $created;
     protected bool $defaultAccount;
@@ -46,6 +47,16 @@ class BankAccount
     public function setAddress(string $address): void
     {
         $this->address = $address;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 
     public function getDailyMaximum(): int

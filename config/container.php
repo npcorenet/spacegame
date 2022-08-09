@@ -20,6 +20,12 @@ $container->add(\App\Controller\LoginController::class)
 $container->add(\App\Controller\AccountController::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
+$container->add(\App\Controller\SpaceController::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+$container->add(\App\Controller\BankController::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
 /*
  *
  * Software Related

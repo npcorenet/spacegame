@@ -27,5 +27,8 @@
     "require-dev": {
         "phpmetrics/phpmetrics": "^2.8",
         "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "generate-metrics": "php ./vendor/bin/phpmetrics . --report-html=phpmetrics"
     }
 }

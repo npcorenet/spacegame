@@ -8,8 +8,10 @@ use App\Table\SolarSystemTable;
 class SpaceService
 {
 
-    public function __construct(private readonly SolarSystemTable $solarSystemTable, private readonly PlanetTable $planetTable)
-    {
+    public function __construct(
+        private readonly SolarSystemTable $solarSystemTable,
+        private readonly PlanetTable $planetTable
+    ) {
     }
 
     public function generateSolarSystemArray(): array

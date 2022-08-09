@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace App\Table;
 
@@ -22,9 +23,7 @@ class BankAccountTable extends AbstractTable
 
     public function findAllByUserId(int $userId): bool|array
     {
-
         return $this->query->from($this->getTableName())->where('user', $userId)->fetchAll();
-
     }
 
     public function findByAddress(string $address): bool|array

@@ -74,7 +74,7 @@ class BankController extends AbstractController
         $bankAccount->setAddress($bankAccountService->generateBankAddress());
         $bankAccount->setUser($userId);
         $bankAccount->setCreated(new \DateTime('', new \DateTimeZone($_ENV['SOFTWARE_TIMEZONE'])));
-        $bankAccount->setDefaultAccount($bankAccountCount === 0 ? 1 : 0);
+        $bankAccount->setDefaultAccount($bankAccountCount === 0);
         $bankAccount->setName($_POST['name']);
         if($bankAccountTable->insert($bankAccount) !==  FALSE) {
             $this->data = ['code' => 200, 'message' => self::CODE200, 'data' =>

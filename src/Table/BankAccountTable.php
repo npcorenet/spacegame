@@ -48,11 +48,11 @@ class BankAccountTable extends AbstractTable
         return $this->query->delete($this->getTableName())->where($where)->execute() == 1;
     }
 
-    public function updateAccountMoneyById(int $id, int $value): bool|int
+    public function updateAccountMoneyById(int $id, int $value): bool|array
     {
         $set = ['money' => $value];
 
-        return $this->query->update($this->getTableName(),$set, $id)->execute();
+        return $this->query->update($this->getTableName(), $set, $id)->execute() == 1;
     }
 
 }

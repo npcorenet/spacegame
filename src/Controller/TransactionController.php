@@ -6,6 +6,7 @@ use App\Model\Finances\Transaction;
 use App\Service\BankAccountService;
 use App\Table\BankAccountTable;
 use App\Table\TransactionTable;
+use Exception;
 use Laminas\Diactoros\Response;
 
 class TransactionController extends AbstractController
@@ -23,6 +24,9 @@ class TransactionController extends AbstractController
         return $this->response();
     }
 
+    /**
+     * @throws Exception
+     */
     public function transfer(): Response
     {
         $userId = $this->isAuthenticatedAndValid();
@@ -44,13 +48,13 @@ class TransactionController extends AbstractController
         $transaction = new Transaction();
         $transaction->setName($_POST['name']);
         $transaction->setAmount((int)$_POST['amount']);
-        $transaction->setFromAccount((int)$senderAccount['user']);
-        $transaction->setToAccount((int)$destinationAccount['user']);
+        $transaction->setFromAccount((int)$senderAccount['id']);
+        $transaction->setToAccount((int)$destinationAccount['id']);
         $transaction->setTime(new \DateTime('', new \DateTimeZone($_ENV['SOFTWARE_TIMEZONE'])));
         $transaction->setContract(0);
 
         if($senderAccount === FALSE || $destinationAccount === FALSE) {
-            $this->data = ['code' => 400, 'message' => 'invalid-sender-or-reciever-address'];
+            $this->data = ['code' => 400, 'message' => 'invalid-sender-or-receiver-address'];
             return $this->response();
         }
 
@@ -66,10 +70,10 @@ class TransactionController extends AbstractController
             return $this->response();
         }
 
-        $updateFrom = $bankAccountTable->updateAccountMoneyById($transaction->getFromAccount(), $balanceFrom);
-        $updateTo = $bankAccountTable->updateAccountMoneyById($transaction->getToAccount(), $balanceTo);
-
-        if($updateFrom == 1 && $updateTo == 1)
+        if(
+            ($bankAccountTable->updateAccountMoneyById($transaction->getFromAccount(), $balanceFrom)) &&
+            ($bankAccountTable->updateAccountMoneyById($transaction->getToAccount(), $balanceTo))
+        )
         {
 
             $transactionTable = new TransactionTable($this->database);

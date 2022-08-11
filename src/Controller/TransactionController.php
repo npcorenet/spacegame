@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Finances\BankAccount;
 use App\Model\Finances\Transaction;
 use App\Service\BankAccountService;
+use App\Service\TransactionService;
 use App\Table\BankAccountTable;
 use App\Table\TransactionTable;
 use DateTime;
@@ -45,13 +47,29 @@ class TransactionController extends AbstractController
 
         $bankAccountTable = new BankAccountTable($this->database);
         $senderAccount = $bankAccountTable->findByAddressAndUserId($_POST['fromAccount'], $userId);
+        $senderMoney = $senderAccount['money'];
+        $sender = new BankAccount();
+        $sender->setId($senderAccount['id']);
+        $sender->setName($senderAccount['name']);
+        $sender->setUser($senderAccount['user']);
+        $sender->setAddress($senderAccount['address']);
+        $sender->setDebtAllowed($senderAccount['debtAllowed'] == 1);
+        $sender->setAmount($senderAccount['money']);
+
         $destinationAccount = $bankAccountTable->findByAddress($_POST['toAccount']);
+        $receiver = new BankAccount();
+        $receiver->setId($destinationAccount['id']);
+        $receiver->setName($destinationAccount['name']);
+        $receiver->setUser($destinationAccount['user']);
+        $receiver->setAddress($destinationAccount['address']);
+        $receiver->setAmount($destinationAccount['money']);
+        $receiver->setDebtAllowed($destinationAccount['debtAllowed'] == 1);
 
         $transaction = new Transaction();
         $transaction->setName($_POST['name']);
         $transaction->setAmount((int)$_POST['amount']);
-        $transaction->setFromAccount((int)$senderAccount['id']);
-        $transaction->setToAccount((int)$destinationAccount['id']);
+        $transaction->setFromAccount($sender->getId());
+        $transaction->setToAccount($receiver->getId());
         $transaction->setTime(new DateTime('', new DateTimeZone($_ENV['SOFTWARE_TIMEZONE'])));
         $transaction->setContract(0);
 
@@ -60,30 +78,33 @@ class TransactionController extends AbstractController
             return $this->response();
         }
 
-        $deptAllowed = $senderAccount['debtAllowed'] == 1;
+        $transactionTable = new TransactionTable($this->database);
 
-        $bankAccountService = new BankAccountService();
-        $balanceFrom = $bankAccountService->calculateNewMoney(
-            $senderAccount['money'],
-            -$transaction->getAmount(),
-            $deptAllowed
+        $transactionService = new TransactionService(
+            $transactionTable,
+            $bankAccountTable
         );
-        $balanceTo = $bankAccountService->calculateNewMoney($destinationAccount['money'], +$transaction->getAmount());
 
-        if ($balanceFrom === false) {
-            $this->data = ['code' => 400, 'message' => 'dept-not-allowed'];
+        $transactionResult = $transactionService->transferMoney(
+            $transaction,
+            $sender,
+            $receiver
+        );
+
+        if($transactionResult === TRUE)
+        {
+            $this->data = ['code' => 200, 'message' => parent::CODE200];
             return $this->response();
         }
 
-        if (
-            ($bankAccountTable->updateAccountMoneyById($transaction->getFromAccount(), $balanceFrom)) &&
-            ($bankAccountTable->updateAccountMoneyById($transaction->getToAccount(), $balanceTo))
-        ) {
-            $transactionTable = new TransactionTable($this->database);
-            if ($transactionTable->insert($transaction) !== false) {
-                $this->data = ['code' => 200, 'message' => self::CODE200];
-                return $this->response();
-            }
+        if($transactionResult === FALSE)
+        {
+            $this->data = ['code' => 500, 'message' => 'transaction-not-finish-able', 'data' => [
+                'newMoney' => $sender->getAmount(),
+                'balance' => $senderMoney,
+                'debtAllowed' => $sender->isDebtAllowed()
+            ]];
+            return $this->response();
         }
 
         $this->data = ['code' => 500, 'message' => 'unknown-error'];

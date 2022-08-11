@@ -21,4 +21,9 @@ class TransactionTable extends AbstractTable
         return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
     }
 
+    public function findAllByBankAccountId(int $id): bool|array
+    {
+        return $this->query->from($this->getTableName())->where('fromAccount', $id)->whereOr('toAccount', $id)->fetchAll();
+    }
+
 }

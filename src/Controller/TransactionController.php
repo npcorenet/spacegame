@@ -13,6 +13,7 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use Laminas\Diactoros\Response;
+use Psr\Http\Message\RequestInterface;
 
 class TransactionController extends AbstractController
 {
@@ -108,6 +109,32 @@ class TransactionController extends AbstractController
         }
 
         $this->data = ['code' => 500, 'message' => 'unknown-error'];
+        return $this->response();
+    }
+
+    public function list(RequestInterface $request, array $args = []): Response
+    {
+        $userId = $this->isAuthenticatedAndValid();
+        if ($userId === false) {
+            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+            return $this->response();
+        }
+
+        if(empty($args['token']))
+        {
+            $this->data = ['code' => 400, 'message' => parent::ERROR400_DATA_MISSING];
+            return $this->response();
+        }
+
+        $token = $args['token'];
+
+        $bankAccountTable = new BankAccountTable($this->database);
+        $bankAccountData = $bankAccountTable->findByAddressAndUserId($token, $userId);
+
+        $transactionTable = new TransactionTable($this->database);
+        $transactionData = $transactionTable->findAllByBankAccountId($bankAccountData['id']);
+
+        $this->data = ['code' => 200, 'message' => parent::CODE200, 'data' => $transactionData];
         return $this->response();
     }
 

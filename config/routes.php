@@ -26,6 +26,7 @@ $router->post('/bank/create', 'App\Controller\BankController::create');
 
 $router->get('/bank/transfer', 'App\Controller\TransactionController::load');
 $router->post('/bank/transfer', 'App\Controller\TransactionController::transfer');
+$router->get('/bank/transfer/{token}', 'App\Controller\TransactionController::list');
 
 $router->get('/bank/{address}', 'App\Controller\BankController::show');
 $router->delete('/bank/{address}', 'App\Controller\BankController::delete');

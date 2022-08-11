@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -13,24 +14,21 @@ class TransactionService
 
     public function __construct(
         private readonly TransactionTable $transactionTable,
-        private readonly BankAccountTable $bankAccountTable)
-    {
+        private readonly BankAccountTable $bankAccountTable
+    ) {
     }
 
     public function transferMoney(
         Transaction $transaction,
         BankAccount $sender,
         BankAccount $receiver
-    ): bool
-    {
-        if($transaction->getAmount() < 0)
-        {
+    ): bool {
+        if ($transaction->getAmount() < 0) {
             $transaction->setAmount(abs($transaction->getAmount()));
         }
 
         $newAmountSender = $this->calculateNewMoney($sender, -$transaction->getAmount());
-        if($newAmountSender === FALSE)
-        {
+        if ($newAmountSender === false) {
             return false;
         }
 

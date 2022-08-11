@@ -23,7 +23,10 @@ class TransactionTable extends AbstractTable
 
     public function findAllByBankAccountId(int $id): bool|array
     {
-        return $this->query->from($this->getTableName())->where('fromAccount', $id)->whereOr('toAccount', $id)->fetchAll();
+        return $this->query->from($this->getTableName())->where('fromAccount', $id)->whereOr(
+            'toAccount',
+            $id
+        )->fetchAll();
     }
 
 }

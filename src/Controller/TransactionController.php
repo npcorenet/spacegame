@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Model\Finances\BankAccount;
 use App\Model\Finances\Transaction;
-use App\Service\BankAccountService;
 use App\Service\TransactionService;
 use App\Table\BankAccountTable;
 use App\Table\TransactionTable;
@@ -92,19 +92,21 @@ class TransactionController extends AbstractController
             $receiver
         );
 
-        if($transactionResult === TRUE)
-        {
+        if ($transactionResult === true) {
             $this->data = ['code' => 200, 'message' => parent::CODE200];
             return $this->response();
         }
 
-        if($transactionResult === FALSE)
-        {
-            $this->data = ['code' => 500, 'message' => 'transaction-not-finish-able', 'data' => [
-                'newMoney' => $sender->getAmount(),
-                'balance' => $senderMoney,
-                'debtAllowed' => $sender->isDebtAllowed()
-            ]];
+        if ($transactionResult === false) {
+            $this->data = [
+                'code' => 500,
+                'message' => 'transaction-not-finish-able',
+                'data' => [
+                    'newMoney' => $sender->getAmount(),
+                    'balance' => $senderMoney,
+                    'debtAllowed' => $sender->isDebtAllowed()
+                ]
+            ];
             return $this->response();
         }
 
@@ -120,8 +122,7 @@ class TransactionController extends AbstractController
             return $this->response();
         }
 
-        if(empty($args['token']))
-        {
+        if (empty($args['token'])) {
             $this->data = ['code' => 400, 'message' => parent::ERROR400_DATA_MISSING];
             return $this->response();
         }

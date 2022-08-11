@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Table;
@@ -45,6 +46,13 @@ class BankAccountTable extends AbstractTable
         $where = ['address' => $address, 'user' => $userId];
 
         return $this->query->delete($this->getTableName())->where($where)->execute() == 1;
+    }
+
+    public function updateAccountMoneyById(int $id, int $value): bool|array
+    {
+        $set = ['money' => $value];
+
+        return $this->query->update($this->getTableName(), $set, $id)->execute() == 1;
     }
 
 }

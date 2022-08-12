@@ -132,8 +132,7 @@ class TransactionController extends AbstractController
         $bankAccountTable = new BankAccountTable($this->database);
         $bankAccountData = $bankAccountTable->findByAddressAndUserId($token, $userId);
 
-        if($bankAccountData === FALSE)
-        {
+        if ($bankAccountData === false) {
             $this->data = $this->responseHelper->createResponse(404, 'account-not-found');
             return $this->response();
         }
@@ -141,8 +140,7 @@ class TransactionController extends AbstractController
         $transactionTable = new TransactionTable($this->database);
         $transactionData = $transactionTable->findAllByBankAccountId($bankAccountData['id']);
 
-        if($transactionData === FALSE)
-        {
+        if ($transactionData === false) {
             $this->data = $this->responseHelper->createResponse(404, 'account-not-found');
             return $this->response();
         }

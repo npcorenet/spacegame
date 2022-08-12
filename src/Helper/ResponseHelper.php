@@ -9,13 +9,10 @@ class ResponseHelper
         int $code,
         string $message = '',
         array $data = null
-    ): array
-    {
-
+    ): array {
         $response['code'] = $code;
-        $response['message'] = empty($message)? $this->getDefaultMessageForCode($code) : $message;
-        if(!is_null($data))
-        {
+        $response['message'] = empty($message) ? $this->getDefaultMessageForCode($code) : $message;
+        if (!is_null($data)) {
             $response['data'] = $data;
         }
 
@@ -24,8 +21,7 @@ class ResponseHelper
 
     private function getDefaultMessageForCode(int $code): string
     {
-
-        return match($code) {
+        return match ($code) {
             200 => 'success',
             400 => 'data-missing',
             403 => 'authentication-required',
@@ -33,7 +29,6 @@ class ResponseHelper
             500 => 'unknown-error',
             default => 'no-message-declared'
         };
-
     }
 
 }

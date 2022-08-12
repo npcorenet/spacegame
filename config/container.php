@@ -9,25 +9,32 @@ $container = new \League\Container\Container();
  *
  * */
 
-$container->add(\App\Controller\IndexController::class);
+$container->add(\App\Controller\IndexController::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\RegisterController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\LoginController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\AccountController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\SpaceController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\BankController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\TransactionController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class);
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
 
 /*
  *
@@ -42,6 +49,8 @@ $container->add(PDO::class)
 
 $container->add(\Envms\FluentPDO\Query::class)
     ->addArgument(PDO::class);
+
+$container->add(\App\Helper\ResponseHelper::class);
 
 $responseFactory = (new \Laminas\Diactoros\ResponseFactory());
 $strategy = (new \League\Route\Strategy\JsonStrategy($responseFactory))->setContainer($container);

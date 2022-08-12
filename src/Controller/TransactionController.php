@@ -22,11 +22,11 @@ class TransactionController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+            $this->data = $this->responseHelper->createResponse(403);
             return $this->response();
         }
 
-        $this->data = ['code' => 401, 'message' => 'invalid-method'];
+        $this->data = $this->responseHelper->createResponse(405);
         return $this->response();
     }
 
@@ -37,12 +37,12 @@ class TransactionController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+            $this->data = $this->responseHelper->createResponse(403);
             return $this->response();
         }
 
         if (!isset($_POST['fromAccount'], $_POST['toAccount'], $_POST['contract'], $_POST['name'], $_POST['amount'])) {
-            $this->data = ['code' => 400, 'message' => parent::ERROR400_DATA_MISSING];
+            $this->data = $this->responseHelper->createResponse(400);
             return $this->response();
         }
 
@@ -75,7 +75,7 @@ class TransactionController extends AbstractController
         $transaction->setContract(0);
 
         if ($senderAccount === false || $destinationAccount === false) {
-            $this->data = ['code' => 400, 'message' => 'invalid-sender-or-receiver-address'];
+            $this->data = $this->responseHelper->createResponse(400, 'sender-or-destination-missing');
             return $this->response();
         }
 
@@ -93,7 +93,7 @@ class TransactionController extends AbstractController
         );
 
         if ($transactionResult === true) {
-            $this->data = ['code' => 200, 'message' => parent::CODE200];
+            $this->data = $this->responseHelper->createResponse(200);
             return $this->response();
         }
 
@@ -110,7 +110,7 @@ class TransactionController extends AbstractController
             return $this->response();
         }
 
-        $this->data = ['code' => 500, 'message' => 'unknown-error'];
+        $this->data = $this->responseHelper->createResponse(500);
         return $this->response();
     }
 
@@ -118,12 +118,12 @@ class TransactionController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+            $this->data = $this->responseHelper->createResponse(403);
             return $this->response();
         }
 
         if (empty($args['token'])) {
-            $this->data = ['code' => 400, 'message' => parent::ERROR400_DATA_MISSING];
+            $this->data = $this->responseHelper->createResponse(400);
             return $this->response();
         }
 
@@ -132,10 +132,26 @@ class TransactionController extends AbstractController
         $bankAccountTable = new BankAccountTable($this->database);
         $bankAccountData = $bankAccountTable->findByAddressAndUserId($token, $userId);
 
+        if($bankAccountData === FALSE)
+        {
+            $this->data = $this->responseHelper->createResponse(404, 'account-not-found');
+            return $this->response();
+        }
+
         $transactionTable = new TransactionTable($this->database);
         $transactionData = $transactionTable->findAllByBankAccountId($bankAccountData['id']);
 
-        $this->data = ['code' => 200, 'message' => parent::CODE200, 'data' => $transactionData];
+        if($transactionData === FALSE)
+        {
+            $this->data = $this->responseHelper->createResponse(404, 'account-not-found');
+            return $this->response();
+        }
+
+        $this->data = $this->responseHelper->createResponse(
+            code: 200,
+            data: $transactionData
+        );
+
         return $this->response();
     }
 

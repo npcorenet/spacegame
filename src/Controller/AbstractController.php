@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Helper\ResponseHelper;
 use App\Table\AccountTable;
 use App\Table\AccountTokenTable;
 use Envms\FluentPDO\Query;
@@ -22,7 +23,8 @@ class AbstractController
     private array $userData = [];
 
     public function __construct(
-        public readonly Query $database
+        public readonly Query $database,
+        public readonly ResponseHelper $responseHelper
     ) {
     }
 

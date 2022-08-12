@@ -8,13 +8,13 @@ class ResponseHelper
     public function createResponse(
         int $code,
         string $message = '',
-        array $data = []
+        array $data = null
     ): array
     {
 
         $response['code'] = $code;
         $response['message'] = empty($message)? $this->getDefaultMessageForCode($code) : $message;
-        if(!empty($data))
+        if(!is_null($data))
         {
             $response['data'] = $data;
         }
@@ -29,6 +29,7 @@ class ResponseHelper
             200 => 'success',
             400 => 'data-missing',
             403 => 'authentication-required',
+            405 => 'method-not-allowed',
             500 => 'unknown-error',
             default => 'no-message-declared'
         };

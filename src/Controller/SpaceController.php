@@ -14,8 +14,8 @@ class SpaceController extends AbstractController
 
     public function load(): Response
     {
-        if ($this->isAuthenticatedAndValid() === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+        $userId = $this->isAuthenticatedAndValid();
+        if ($userId instanceof Response) {
             return $this->response();
         }
 
@@ -26,16 +26,15 @@ class SpaceController extends AbstractController
             $spaceData = (new SpaceService($solarSystemTable, $planetTable))->generateSolarSystemArray();
 
             file_put_contents(CACHE_DIR . '/planets.json', json_encode($spaceData));
-            $this->data = ['code' => 200, 'message' => self::CODE200, 'data' => $spaceData];
 
+            $this->data = $this->responseHelper->createResponse(code: 200, data: $spaceData);
             return $this->response();
         }
 
         $spaceData = file_get_contents(CACHE_DIR . '/planets.json');
         $spaceData = json_decode($spaceData);
 
-        $this->data = ['code' => 200, 'message' => self::CODE200, 'data' => $spaceData];
-
+        $this->data = $this->responseHelper->createResponse(code: 200, data: $spaceData);
         return $this->response();
     }
 

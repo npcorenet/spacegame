@@ -12,10 +12,10 @@ $request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals(
 $router->get('/', 'App\Controller\IndexController::load');
 
 $router->get('/auth/register', 'App\Controller\RegisterController::load');
-$router->post('/auth/register', 'App\Controller\RegisterController::load');
+$router->post('/auth/register', 'App\Controller\RegisterController::run');
 
 $router->get('/auth/login', 'App\Controller\LoginController::load');
-$router->post('/auth/login', 'App\Controller\LoginController::load');
+$router->post('/auth/login', 'App\Controller\LoginController::run');
 
 $router->get('/account', 'App\Controller\AccountController::load');
 

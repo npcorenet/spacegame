@@ -2,9 +2,16 @@
 
 namespace App\Helper;
 
+use JetBrains\PhpStorm\ArrayShape;
+
 class ResponseHelper
 {
 
+    #[ArrayShape([
+        'code' => 'int',
+        'message' => 'string',
+        'data' => 'array'
+    ])]
     public function createResponse(
         int $code,
         string $message = '',
@@ -25,6 +32,7 @@ class ResponseHelper
             200 => 'success',
             400 => 'data-missing',
             403 => 'authentication-required',
+            404 => 'not-found',
             405 => 'method-not-allowed',
             500 => 'unknown-error',
             default => 'no-message-declared'

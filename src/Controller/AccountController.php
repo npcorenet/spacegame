@@ -4,58 +4,27 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Helper\TokenHelper;
-use App\Table\AccountTable;
-use App\Table\AccountTokenTable;
-use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\RequestInterface;
 
-class AccountController
+class AccountController extends AbstractController
 {
-
-    private array $data = [];
-
-    public function __construct(private readonly Query $query)
-    {
-    }
 
     public function load(RequestInterface $request): Response
     {
-        $token = null;
-        if (isset($_SERVER['HTTP_X_API_KEY'])) {
-            $token = $_SERVER['HTTP_X_API_KEY'];
-        }
-
-        $tokenTable = new AccountTokenTable($this->query);
-        $tokenData = (new TokenHelper())->verifyAccountTokenAndGetData($token, $tokenTable);
-
-        if (empty($tokenData)) {
-            $this->data = ['code' => 403, 'message' => 'invalid-token'];
+        $userId = $this->isAuthenticatedAndValid();
+        if ($userId instanceof Response) {
             return $this->response();
         }
 
-        $userData = (new AccountTable($this->query))->findById($tokenData['userId']);
-        $userData['tokenValidUntil'] = $tokenData['validUntil'];
+        $this->getUserAccountData();
+        unset($this->userData['password']);
 
-        $userData['isAdmin'] = $userData['isAdmin'] === 1;
-        $userData['active'] = $userData['active'] === 1;
-
-        unset($userData['password']);
-
-        $this->data['code'] = 200;
-        $this->data['data'] = $userData;
-
+        $this->data = $this->responseHelper->createResponse(
+            code: 200,
+            data: $this->userData
+        );
         return $this->response();
-    }
-
-    private function response(): Response
-    {
-        $response = new Response();
-
-        $response->getBody()->write(json_encode($this->data));
-
-        return $response->withStatus($this->data['code'] ?? 500);
     }
 
 }

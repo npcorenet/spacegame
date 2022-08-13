@@ -10,6 +10,7 @@ $container = new \League\Container\Container();
  * */
 
 $container->add(\App\Controller\IndexController::class)
+    ->addArgument(\Envms\FluentPDO\Query::class)
     ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\RegisterController::class)

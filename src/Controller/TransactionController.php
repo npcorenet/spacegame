@@ -21,8 +21,7 @@ class TransactionController extends AbstractController
     public function load(): Response
     {
         $userId = $this->isAuthenticatedAndValid();
-        if ($userId === false) {
-            $this->data = $this->responseHelper->createResponse(403);
+        if ($userId instanceof Response) {
             return $this->response();
         }
 
@@ -36,8 +35,7 @@ class TransactionController extends AbstractController
     public function transfer(): Response
     {
         $userId = $this->isAuthenticatedAndValid();
-        if ($userId === false) {
-            $this->data = $this->responseHelper->createResponse(403);
+        if ($userId instanceof Response) {
             return $this->response();
         }
 

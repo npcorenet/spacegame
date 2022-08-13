@@ -18,8 +18,7 @@ class BankController extends AbstractController
     public function load(): Response
     {
         $userId = $this->isAuthenticatedAndValid();
-        if ($userId === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+        if ($userId instanceof Response) {
             return $this->response();
         }
 
@@ -30,17 +29,13 @@ class BankController extends AbstractController
         $bankAccountLimit = $bankAccountService->countMaxBankAccountsByLevel($this->getUserAccountData()['level']);
         $bankAccountCount = count($bankAccountTable->findAllByUserId($this->getUserAccountData()['id']));
 
-
-        $this->data = [
-            'code' => 200,
-            'message' => self::CODE200,
-            'data' =>
-                [
-                    'limit' => $bankAccountLimit,
-                    'count' => $bankAccountCount,
-                    'accounts' => $accounts
-                ]
+        $data = [
+            'limit' => $bankAccountLimit,
+            'count' => $bankAccountCount,
+            'accounts' => $accounts
         ];
+
+        $this->data = $this->responseHelper->createResponse(code: 200, data: $data);
 
         return $this->response();
     }
@@ -48,18 +43,12 @@ class BankController extends AbstractController
     public function create(RequestInterface $request): Response
     {
         $userId = $this->isAuthenticatedAndValid();
-        if ($userId === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
-            return $this->response();
-        }
-
-        if ($request->getMethod() !== "POST") {
-            $this->data = ['code' => 400, 'message' => 'request-post'];
+        if ($userId instanceof Response) {
             return $this->response();
         }
 
         if (!isset($_POST['name'])) {
-            $this->data = ['code' => 400, 'message' => 'data-missing'];
+            $this->data = $this->responseHelper->createResponse(400);
             return $this->response();
         }
 
@@ -69,12 +58,11 @@ class BankController extends AbstractController
         $bankAccountCount = count($bankAccountTable->findAllByUserId($this->getUserAccountData()['id']));
 
         if ($bankAccountLimit <= $bankAccountCount) {
-            $this->data = [
-                'code' => 200,
-                'message' => 'bank-account-limit-reached',
-                'data' =>
-                    ['limit' => $bankAccountLimit, 'current' => $bankAccountCount]
-            ];
+            $this->data = $this->responseHelper->createResponse(
+                code: 200,
+                message: 'bank-account-limit-reached',
+                data: ['limit' => $bankAccountLimit, 'current' => $bankAccountCount]
+            );
             return $this->response();
         }
 
@@ -85,35 +73,26 @@ class BankController extends AbstractController
         $bankAccount->setDefaultAccount($bankAccountCount === 0);
         $bankAccount->setName($_POST['name']);
         if ($bankAccountTable->insert($bankAccount) !== false) {
-            $this->data = [
-                'code' => 200,
-                'message' => self::CODE200,
-                'data' =>
-                    [
-                        'address' => $bankAccount->getAddress(),
-                        'name' => $bankAccount->getName()
-                    ]
-            ];
+            $this->data = $this->responseHelper->createResponse(
+                code: 200, data: ['address' => $bankAccount->getAddress(), 'name' => $bankAccount->getName()]
+            );
 
             return $this->response();
         }
 
-
-        $this->data = ['code' => 500, 'message' => 'unknown-error'];
-
+        $this->data = $this->responseHelper->createResponse(500);
         return $this->response();
     }
 
     public function show(RequestInterface $request, array $args): Response
     {
         $userId = $this->isAuthenticatedAndValid();
-        if ($userId === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+        if ($userId instanceof Response) {
             return $this->response();
         }
 
         if (!isset($args['address'])) {
-            $this->data = ['code' => 400, 'message' => 'missing-arguments'];
+            $this->data = $this->responseHelper->createResponse(400);
             return $this->response();
         }
 
@@ -121,11 +100,11 @@ class BankController extends AbstractController
         $bankAccountData = $bankAccountTable->findByAddressAndUserId($args['address'], $userId);
 
         if ($bankAccountData === false) {
-            $this->data = ['code' => 404, 'message' => 'bank-account-not-found'];
+            $this->data = $this->responseHelper->createResponse(code: 400, message: 'bank-account-not-found');
             return $this->response();
         }
 
-        $this->data = ['code' => 200, 'message' => self::CODE200, 'data' => $bankAccountData];
+        $this->data = $this->responseHelper->createResponse(code: 200, data: $bankAccountData);
 
         return $this->response();
     }
@@ -133,13 +112,12 @@ class BankController extends AbstractController
     public function delete(RequestInterface $request, array $args): Response
     {
         $userId = $this->isAuthenticatedAndValid();
-        if ($userId === false) {
-            $this->data = ['code' => 403, 'message' => parent::ERROR403];
+        if ($userId instanceof Response) {
             return $this->response();
         }
 
         if (!isset($args['token']) || !isset($args['address'])) {
-            $this->data = ['code' => 400, 'message' => 'missing-arguments'];
+            $this->data = $this->responseHelper->createResponse(400);
             return $this->response();
         }
 
@@ -147,27 +125,26 @@ class BankController extends AbstractController
         $accountList = $bankAccountTable->findAllByUserId($userId);
         $tokenList = $bankAccountTable->findByAddress($args['address']);
         if (($accountList === false) || ($tokenList === false)) {
-            $this->data = ['code' => 404, 'message' => 'bank-account-not-found'];
+            $this->data = $this->responseHelper->createResponse(404);
             return $this->response();
         }
 
         if ($args['token'] !== $this->token) {
-            $this->data = ['code' => 409, 'message' => 'confirmation-required'];
+            $this->data = $this->responseHelper->createResponse(409, 'confirmation-required');
             return $this->response();
         }
 
         if (count($accountList) <= 1) {
-            $this->data = ['code' => 401, 'message' => 'one-account-required'];
+            $this->data = $this->responseHelper->createResponse(401, 'one-account-minimum');
             return $this->response();
         }
 
         if (!$bankAccountTable->deleteByAddressAndUserId($args['address'], $userId)) {
-            $this->data = ['code' => 500, 'message' => 'unknown-error'];
+            $this->data = $this->responseHelper->createResponse(500);
             return $this->response();
         }
 
-        $this->data = ['code' => 200, 'message' => 'success'];
-
+        $this->data = $this->responseHelper->createResponse(200);
         return $this->response();
     }
 

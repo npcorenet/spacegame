@@ -18,8 +18,7 @@ class IndexController extends AbstractController
             data: [
             'version' => Software::VERSION,
             'build' => Software::VERSION_CODE,
-            'development' => (bool)$_ENV['SOFTWARE_INDEV']
-        ]
+            ]
         );
 
         return $this->response();

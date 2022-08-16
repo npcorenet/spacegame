@@ -29,6 +29,7 @@
         "phpunit/phpunit": "^9.5"
     },
     "scripts": {
-        "generate-metrics": "php ./vendor/bin/phpmetrics . --report-html=phpmetrics"
+        "generate-metrics": "php ./vendor/bin/phpmetrics . --report-html=phpmetrics",
+        "tests": "php ./vendor/bin/phpunit"
     }
 }

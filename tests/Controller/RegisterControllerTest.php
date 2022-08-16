@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Controller;
 
 use App\Controller\RegisterController;
+use App\Helper\ResponseHelper;
 use App\Software;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Request;
@@ -15,12 +16,13 @@ class RegisterControllerTest extends TestCase
 {
 
     private Query $database;
+    private ResponseHelper $responseHelper;
 
     public function testLoadReturnsResponseInterface()
     {
         $request = new Request();
 
-        $registerController = new RegisterController($this->database);
+        $registerController = new RegisterController($this->database, $this->responseHelper);
         $this->assertInstanceOf(ResponseInterface::class, $registerController->load($request));
     }
 
@@ -28,15 +30,13 @@ class RegisterControllerTest extends TestCase
     {
         $_POST = null;
         $request = new Request();
-        $request->withMethod('GET');
 
-        $expected['message'] = 'This requires to be called with POST';
-        $expected['code'] = 400;
+        $expected = $this->responseHelper->createResponse(405);
 
-        $registerController = new RegisterController($this->database);
+        $registerController = new RegisterController($this->database, $this->responseHelper);
         $response = $registerController->load($request);
 
-        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(405, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
         $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
@@ -47,14 +47,14 @@ class RegisterControllerTest extends TestCase
         $_POST = null;
         $request = new Request('', 'POST');
 
-        $expected = json_encode(['code' => 400, 'message' => 'Please make sure, that all required data is sent!']);
+        $expected = $this->responseHelper->createResponse(405);
 
-        $registerController = new RegisterController($this->database);
+        $registerController = new RegisterController($this->database, $this->responseHelper);
         $response = $registerController->load($request);
 
-        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(405, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
@@ -66,14 +66,14 @@ class RegisterControllerTest extends TestCase
         $_POST['username'] = 'Test';
         $_POST['password'] = '12345678';
 
-        $expected = json_encode(['code' => 400, 'message' => 'email-invalid']);
+        $expected = $this->responseHelper->createResponse(400, 'email-invalid');
 
-        $registerController = new RegisterController($this->database);
-        $response = $registerController->load($request);
+        $registerController = new RegisterController($this->database, $this->responseHelper);
+        $response = $registerController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
@@ -85,14 +85,14 @@ class RegisterControllerTest extends TestCase
         $_POST['username'] = '';
         $_POST['password'] = '12345678';
 
-        $expected = json_encode(['code' => 400, 'message' => 'name-empty']);
+        $expected = $this->responseHelper->createResponse(400, 'name-empty');
 
-        $registerController = new RegisterController($this->database);
-        $response = $registerController->load($request);
+        $registerController = new RegisterController($this->database, $this->responseHelper);
+        $response = $registerController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
@@ -104,16 +104,14 @@ class RegisterControllerTest extends TestCase
         $_POST['username'] = 'Test';
         $_POST['password'] = '';
 
-        $expected = json_encode(
-            ['code' => 400, 'message' => 'password-minimum-length-' . $_ENV['SOFTWARE_MIN_PASSWORD_LENGTH']]
-        );
+        $expected = $this->responseHelper->createResponse(400, 'password-minimum-length-' . $_ENV['SOFTWARE_MIN_PASSWORD_LENGTH']);
 
-        $registerController = new RegisterController($this->database);
-        $response = $registerController->load($request);
+        $registerController = new RegisterController($this->database, $this->responseHelper);
+        $response = $registerController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
@@ -125,20 +123,21 @@ class RegisterControllerTest extends TestCase
         $_POST['username'] = 'Test';
         $_POST['password'] = '12345678';
 
-        $expected = json_encode(['code' => 400, 'message' => 'email-invalid']);
+        $expected = $this->responseHelper->createResponse(400, 'email-invalid');
 
-        $registerController = new RegisterController($this->database);
-        $response = $registerController->load($request);
+        $registerController = new RegisterController($this->database, $this->responseHelper);
+        $response = $registerController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
     protected function setUp(): void
     {
         $this->database = $this->createMock(Query::class);
+        $this->responseHelper = new ResponseHelper();
 
         Software::loadEnvironmentFile(__DIR__ . '/../../', '.env.example');
 

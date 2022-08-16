@@ -61,7 +61,7 @@ class AbstractController
 
         $response->getBody()->write(json_encode($this->data));
 
-        return $response;
+        return $response->withStatus($this->data['code']?? 500);
     }
 
     public function getUserAccountData(): array

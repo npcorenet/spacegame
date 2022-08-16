@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Controller;
 
 use App\Controller\LoginController;
+use App\Helper\ResponseHelper;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Request;
 use PHPUnit\Framework\TestCase;
@@ -14,12 +15,13 @@ class LoginControllerTest extends TestCase
 {
 
     private Query $database;
+    private ResponseHelper $responseHelper;
 
     public function testLoadReturnsResponseInterface()
     {
         $request = new Request();
 
-        $loginController = new LoginController($this->database);
+        $loginController = new LoginController($this->database, $this->responseHelper);
         $this->assertInstanceOf(ResponseInterface::class, $loginController->load($request));
     }
 
@@ -29,13 +31,12 @@ class LoginControllerTest extends TestCase
         $request = new Request();
         $request->withMethod('GET');
 
-        $expected['message'] = 'This requires to be called with POST';
-        $expected['code'] = 400;
+        $expected = $this->responseHelper->createResponse(405);
 
-        $loginController = new LoginController($this->database);
+        $loginController = new LoginController($this->database, $this->responseHelper);
         $response = $loginController->load($request);
 
-        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(405, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
         $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
@@ -46,10 +47,10 @@ class LoginControllerTest extends TestCase
         $_POST = null;
         $request = new Request('', 'POST');
 
-        $expected = json_encode(['code' => 400, 'message' => 'Please make sure, that all required data is sent!']);
+        $expected = json_encode($this->responseHelper->createResponse(400));
 
-        $loginController = new LoginController($this->database);
-        $response = $loginController->load($request);
+        $loginController = new LoginController($this->database, $this->responseHelper);
+        $response = $loginController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
@@ -64,14 +65,14 @@ class LoginControllerTest extends TestCase
         $_POST['email'] = '';
         $_POST['password'] = '12345678';
 
-        $expected = json_encode(['code' => 400, 'message' => 'email-invalid']);
+        $expected = $this->responseHelper->createResponse(400, 'email-invalid');
 
-        $loginController = new LoginController($this->database);
-        $response = $loginController->load($request);
+        $loginController = new LoginController($this->database, $this->responseHelper);
+        $response = $loginController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
@@ -82,14 +83,14 @@ class LoginControllerTest extends TestCase
         $_POST['email'] = 'test@test.de';
         $_POST['password'] = '';
 
-        $expected = json_encode(['code' => 400, 'message' => 'password-empty']);
+        $expected = $this->responseHelper->createResponse(400, 'password-empty');
 
-        $loginController = new LoginController($this->database);
-        $response = $loginController->load($request);
+        $loginController = new LoginController($this->database, $this->responseHelper);
+        $response = $loginController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
@@ -100,20 +101,21 @@ class LoginControllerTest extends TestCase
         $_POST['email'] = 'kekwmail';
         $_POST['password'] = '12345678';
 
-        $expected = json_encode(['code' => 400, 'message' => 'email-invalid']);
+        $expected = $this->responseHelper->createResponse(400, 'email-invalid');
 
-        $loginController = new LoginController($this->database);
-        $response = $loginController->load($request);
+        $loginController = new LoginController($this->database, $this->responseHelper);
+        $response = $loginController->run($request);
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertJson((string)$response->getBody());
-        $this->assertSame($expected, (string)$response->getBody());
+        $this->assertSame(json_encode($expected), (string)$response->getBody());
         $_POST = null;
     }
 
     protected function setUp(): void
     {
         $this->database = $this->createMock(Query::class);
+        $this->responseHelper = new ResponseHelper();
 
         parent::setUp();
     }

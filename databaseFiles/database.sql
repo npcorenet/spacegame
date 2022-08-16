@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS `Account` (
   `isAdmin` tinyint(4) NOT NULL DEFAULT 0,
   `active` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Account: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.AccountToken
 CREATE TABLE IF NOT EXISTS `AccountToken` (
@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS `AccountToken` (
   PRIMARY KEY (`id`),
   KEY `user` (`userId`),
   CONSTRAINT `user` FOREIGN KEY (`userId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.AccountToken: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.BankAccount
 CREATE TABLE IF NOT EXISTS `BankAccount` (
@@ -60,9 +60,9 @@ CREATE TABLE IF NOT EXISTS `BankAccount` (
   PRIMARY KEY (`id`),
   KEY `accountOwner` (`user`),
   CONSTRAINT `accountOwner` FOREIGN KEY (`user`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.BankAccount: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Contract
 CREATE TABLE IF NOT EXISTS `Contract` (
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `Contract` (
   CONSTRAINT `byUser` FOREIGN KEY (`byUser`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Contract: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.ContractAccount
 CREATE TABLE IF NOT EXISTS `ContractAccount` (
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `ContractAccount` (
   CONSTRAINT `contractVehicle` FOREIGN KEY (`vehicle`) REFERENCES `Vehicle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.ContractAccount: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Launch
 CREATE TABLE IF NOT EXISTS `Launch` (
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `Launch` (
   CONSTRAINT `launchVehicle` FOREIGN KEY (`vehicle`) REFERENCES `Vehicle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Launch: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Location
 CREATE TABLE IF NOT EXISTS `Location` (
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `Location` (
   CONSTRAINT `LocationUser` FOREIGN KEY (`user`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Location: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.LoginHistory
 CREATE TABLE IF NOT EXISTS `LoginHistory` (
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `LoginHistory` (
   CONSTRAINT `loginUser` FOREIGN KEY (`user`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.LoginHistory: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Planet
 CREATE TABLE IF NOT EXISTS `Planet` (
@@ -187,15 +187,7 @@ CREATE TABLE IF NOT EXISTS `Planet` (
   CONSTRAINT `planetSolarSystem` FOREIGN KEY (`solarSystem`) REFERENCES `SolarSystem` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Planet: ~7 rows (approximately)
-INSERT INTO `Planet` (`id`, `solarSystem`, `moon`, `name`, `mass`, `radius`, `distance`, `atmosphereHeight`, `atmosphereDensity`, `oxygen`, `solidSurface`, `coreTemperature`) VALUES
-	(1, 1, NULL, 'mercury', 0.055, 2439, 0.4, 0, 0, 0, 1, 440),
-	(2, 1, NULL, 'venus', 0.815, 6051, 0.7, 250, 67, 0, 1, 737),
-	(3, 1, NULL, 'earth', 1, 6371, 1, 100, 1.2041, 1, 1, 4850),
-	(4, 1, 3, 'moon', 0.0123, 1737, 0.002569, 0, 0, 0, 1, 1873),
-	(5, 1, NULL, 'mars', 0.107, 3389, 1.5303, 11, 0.02, 0, 1, 1305),
-	(6, 1, NULL, 'jupiter', 317.8, 69911, 4.2, 50, 1.33, 0, 1, 20000),
-	(7, 1, 6, 'Io', 0.015, 1821, 2.8209, 15, 3.55, 0, 1, 1973);
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Satellite
 CREATE TABLE IF NOT EXISTS `Satellite` (
@@ -220,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `Satellite` (
   CONSTRAINT `satelliteUser` FOREIGN KEY (`user`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Satellite: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.SatelliteType
 CREATE TABLE IF NOT EXISTS `SatelliteType` (
@@ -235,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `SatelliteType` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.SatelliteType: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.SolarSystem
 CREATE TABLE IF NOT EXISTS `SolarSystem` (
@@ -247,9 +239,7 @@ CREATE TABLE IF NOT EXISTS `SolarSystem` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.SolarSystem: ~0 rows (approximately)
-INSERT INTO `SolarSystem` (`id`, `name`, `starMass`, `starRadius`, `temperature`) VALUES
-	(1, 'sun', 332946, 696340, 5778);
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Token
 CREATE TABLE IF NOT EXISTS `Token` (
@@ -262,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `Token` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Token: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Transaction
 CREATE TABLE IF NOT EXISTS `Transaction` (
@@ -280,9 +270,9 @@ CREATE TABLE IF NOT EXISTS `Transaction` (
   CONSTRAINT `contractAssigned` FOREIGN KEY (`contract`) REFERENCES `Contract` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fromAccount` FOREIGN KEY (`fromAccount`) REFERENCES `BankAccount` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `toAccount` FOREIGN KEY (`toAccount`) REFERENCES `BankAccount` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Transaction: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.Vehicle
 CREATE TABLE IF NOT EXISTS `Vehicle` (
@@ -300,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `Vehicle` (
   CONSTRAINT `vehicleUser` FOREIGN KEY (`user`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.Vehicle: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 -- Dumping structure for table db.VehicleType
 CREATE TABLE IF NOT EXISTS `VehicleType` (
@@ -317,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `VehicleType` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table db.VehicleType: ~0 rows (approximately)
+-- Data exporting was unselected.
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

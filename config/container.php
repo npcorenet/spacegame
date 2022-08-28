@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 $container = new \League\Container\Container();
 
-/*
- *
- * Routes
- *
- * */
+#
+# Controllers
+#
 
 $container->add(\App\Controller\IndexController::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
@@ -37,11 +35,23 @@ $container->add(\App\Controller\TransactionController::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
     ->addArgument(\App\Helper\ResponseHelper::class);
 
-/*
- *
- * Software Related
- *
- * */
+$container->add(\App\Controller\ContractController::class)
+    ->addArgument(\Envms\FluentPDO\Query::class)
+    ->addArgument(\App\Helper\ResponseHelper::class);
+
+#
+# Services
+#
+
+#
+# Repositories
+#
+$container->add(\App\Table\ContractTable::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+#
+# Dependencies
+#
 
 $container->add(PDO::class)
     ->addArgument('mysql:host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'])

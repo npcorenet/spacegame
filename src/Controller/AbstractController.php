@@ -23,11 +23,13 @@ class AbstractController
     public array $userData = [];
     private int $userId = 0;
     private DateTime $tokenValidUntil;
+    public DateTimeZone $timeZone;
 
     public function __construct(
         public readonly Query $database,
         public readonly ResponseHelper $responseHelper
     ) {
+        $this->timeZone = new DateTimeZone($_ENV['SOFTWARE_TIMEZONE']);
     }
 
     public function isAuthenticatedAndValid(): Response|int
@@ -55,8 +57,13 @@ class AbstractController
         return $this->response();
     }
 
-    public function response(): Response
+    public function response(array $data = []): Response
     {
+        if(!empty($data))
+        {
+            $this->data = $data;
+        }
+
         $response = new Response();
 
         $response->getBody()->write(json_encode($this->data));

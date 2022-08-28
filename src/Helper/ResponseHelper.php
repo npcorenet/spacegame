@@ -34,6 +34,7 @@ class ResponseHelper
             403 => 'authentication-required',
             404 => 'not-found',
             405 => 'method-not-allowed',
+            410 => 'no-longer-available',
             500 => 'unknown-error',
             default => 'no-message-declared'
         };

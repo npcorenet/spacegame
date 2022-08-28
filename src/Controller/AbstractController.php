@@ -12,7 +12,7 @@ use DateTimeZone;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 
-class AbstractController
+abstract class AbstractController
 {
 
     public string $token;
@@ -23,8 +23,8 @@ class AbstractController
     public DateTimeZone $timeZone;
 
     public function __construct(
-        public readonly Query $database,
-        public readonly ResponseHelper $responseHelper
+        public Query $database,
+        public ResponseHelper $responseHelper
     ) {
         $this->timeZone = new DateTimeZone($_ENV['SOFTWARE_TIMEZONE']);
     }

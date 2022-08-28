@@ -13,7 +13,8 @@ $container->add(\App\Controller\IndexController::class)
 
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\App\Helper\ResponseHelper::class)
+    ->addArgument(\App\Service\AccountService::class);
 
 $container->add(\App\Controller\LoginController::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
@@ -42,10 +43,22 @@ $container->add(\App\Controller\ContractController::class)
 #
 # Services
 #
+$container->add(\App\Service\AccountService::class)
+    ->addArgument(\App\Table\AccountTable::class)
+    ->addArgument(\App\Service\SecurityService::class)
+    ->addArgument(\App\Table\AccountTokenTable::class);
+
+$container->add(\App\Service\SecurityService::class);
 
 #
 # Repositories
 #
+$container->add(\App\Table\AccountTable::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+$container->add(\App\Table\AccountTokenTable::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
 $container->add(\App\Table\ContractTable::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 

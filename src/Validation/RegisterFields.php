@@ -17,10 +17,6 @@ class RegisterFields
             return ['code' => 400, 'message' => 'name-empty'];
         }
 
-        if (mb_strlen($account->getPassword()) < $_ENV['SOFTWARE_MIN_PASSWORD_LENGTH']) {
-            return ['code' => 400, 'message' => 'password-minimum-length-' . $_ENV['SOFTWARE_MIN_PASSWORD_LENGTH']];
-        }
-
         return [];
     }
 

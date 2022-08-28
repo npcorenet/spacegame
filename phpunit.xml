@@ -27,4 +27,8 @@
             <html outputDirectory=".phpunit.cache/build/coverage"/>
         </report>
     </coverage>
+
+    <php>
+        <env name="SOFTWARE_TIMEZONE" value="UTC" force="true" />
+    </php>
 </phpunit>

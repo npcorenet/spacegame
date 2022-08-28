@@ -15,9 +15,6 @@ use Laminas\Diactoros\Response;
 class AbstractController
 {
 
-    public const ERROR403 = 'invalid-token';
-    public const CODE200 = 'success';
-
     public string $token;
     public array $data = [];
     public array $userData = [];

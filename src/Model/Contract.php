@@ -6,19 +6,19 @@ namespace App\Model;
 
 use DateTime;
 
-class Contract
+class Contract extends AbstractModel
 {
 
     protected int $id;
     protected string $name;
     protected string $description;
     protected DateTime $availableFrom;
-    protected DateTime $availableUntil;
+    protected ?DateTime $availableUntil;
     protected int $maxDuration;
     protected int $minimumLevel;
     protected int $prePayment;
     protected int $reward;
-    protected int $byUser;
+    protected ?int $byUser;
     protected int $userLimit;
 
     public function getId(): int
@@ -61,12 +61,12 @@ class Contract
         $this->availableFrom = $availableFrom;
     }
 
-    public function getAvailableUntil(): DateTime
+    public function getAvailableUntil(): ?DateTime
     {
         return $this->availableUntil;
     }
 
-    public function setAvailableUntil(DateTime $availableUntil): void
+    public function setAvailableUntil(?DateTime $availableUntil): void
     {
         $this->availableUntil = $availableUntil;
     }
@@ -106,17 +106,17 @@ class Contract
         return $this->reward;
     }
 
-    public function setReward(int $reward): void
+    public function setReward(?int $reward): void
     {
         $this->reward = $reward;
     }
 
-    public function getByUser(): int
+    public function getByUser(): ?int
     {
         return $this->byUser;
     }
 
-    public function setByUser(int $byUser): void
+    public function setByUser(?int $byUser): void
     {
         $this->byUser = $byUser;
     }

@@ -32,6 +32,8 @@ $router->get('/bank/{address}', 'App\Controller\BankController::show');
 $router->delete('/bank/{address}', 'App\Controller\BankController::delete');
 $router->delete('/bank/{address}/{token}', 'App\Controller\BankController::delete');
 
+$router->get('/contract', 'App\Controller\ContractController::load');
+$router->get('/contract/{id}', 'App\Controller\ContractController::show');
 
 $response = $router->dispatch($request);
 (new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);

@@ -23,11 +23,13 @@ class AbstractController
     public array $userData = [];
     private int $userId = 0;
     private DateTime $tokenValidUntil;
+    public DateTimeZone $timeZone;
 
     public function __construct(
         public readonly Query $database,
         public readonly ResponseHelper $responseHelper
     ) {
+        $this->timeZone = new DateTimeZone($_ENV['SOFTWARE_TIMEZONE']);
     }
 
     public function isAuthenticatedAndValid(): Response|int

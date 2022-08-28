@@ -6,7 +6,7 @@ namespace App\Model;
 
 use DateTime;
 
-class ContractAccount
+class ContractAccount extends AbstractModel
 {
 
     protected int $id;

@@ -46,6 +46,8 @@ $container->add(\App\Controller\ContractController::class)
 #
 # Repositories
 #
+$container->add(\App\Table\ContractTable::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
 
 #
 # Dependencies

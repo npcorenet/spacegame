@@ -18,7 +18,7 @@ abstract class AbstractModel
                 $data[$var] = $value;
                 if($data[$var] instanceof DateTime)
                 {
-                    $data[$var]->format($_ENV['SOFTWARE_FORMAT_TIMESTAMP']);
+                    $data[$var] = $data[$var]->format($_ENV['SOFTWARE_FORMAT_TIMESTAMP']);
                 }
             }
         }
@@ -47,6 +47,11 @@ abstract class AbstractModel
         {
             if(in_array($var, $vars))
             {
+                if(is_string($value) && DateTime::createFromFormat($_ENV['SOFTWARE_FORMAT_TIMESTAMP'], $value) !== FALSE)
+                {
+                    $this->$var = new DateTime($value, new \DateTimeZone($_ENV['SOFTWARE_TIMEZONE']));
+                    continue;
+                }
                 $this->$var = $value;
             }
         }

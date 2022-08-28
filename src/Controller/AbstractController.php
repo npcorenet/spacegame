@@ -57,8 +57,13 @@ class AbstractController
         return $this->response();
     }
 
-    public function response(): Response
+    public function response(array $data = []): Response
     {
+        if(!empty($data))
+        {
+            $this->data = $data;
+        }
+
         $response = new Response();
 
         $response->getBody()->write(json_encode($this->data));

@@ -2,8 +2,19 @@
 
 namespace App\Table;
 
+use App\Model\ContractAccount;
+
 class ContractAccountTable extends AbstractTable
 {
+
+    public function insert(ContractAccount $contractAccount): int|bool
+    {
+
+        $values = $contractAccount->generateArrayFromSetVariables();
+
+        return $this->query->insertInto($this->getTableName())->values($values)->executeWithoutId();
+
+    }
 
     public function findAllByUserId(int $userId): array|bool
     {

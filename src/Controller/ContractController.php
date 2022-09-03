@@ -21,7 +21,7 @@ class ContractController extends AbstractController
 
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         $contractTable = new ContractTable($this->database);
@@ -52,9 +52,7 @@ class ContractController extends AbstractController
             $data[] = $contract;
         }
 
-        $this->data = $this->responseHelper->createResponse(code: 200, data: $data);
-
-        return $this->response();
+        return new JsonResponse(200, $data);
     }
 
     /**

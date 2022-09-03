@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Helper\ResponseHelper;
 use App\Http\JsonResponse;
 use App\Table\AccountTable;
 use App\Table\AccountTokenTable;
@@ -17,7 +16,6 @@ abstract class AbstractController
 {
 
     public string $token;
-    public array $data = [];
     public array $userData = [];
     private int $userId = 0;
     private DateTime $tokenValidUntil;
@@ -50,20 +48,6 @@ abstract class AbstractController
         }
 
         return new JsonResponse(403);
-    }
-
-    public function response(array $data = []): Response
-    {
-        if(!empty($data))
-        {
-            $this->data = $data;
-        }
-
-        $response = new Response();
-
-        $response->getBody()->write(json_encode($this->data));
-
-        return $response->withStatus($this->data['code']?? 500);
     }
 
     public function getUserAccountData(): array

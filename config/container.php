@@ -8,37 +8,30 @@ $container = new \League\Container\Container();
 #
 
 $container->add(\App\Controller\IndexController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Controller\RegisterController::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class)
     ->addArgument(\App\Service\AccountService::class);
 
 $container->add(\App\Controller\LoginController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Controller\AccountController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Controller\SpaceController::class)
     ->addArgument(\App\Table\SolarSystemTable::class)
     ->addArgument(\App\Table\PlanetTable::class);
 
 $container->add(\App\Controller\BankController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Controller\TransactionController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Controller\ContractController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\Envms\FluentPDO\Query::class);
 
 #
 # Services

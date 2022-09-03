@@ -25,8 +25,8 @@ $container->add(\App\Controller\AccountController::class)
     ->addArgument(\App\Helper\ResponseHelper::class);
 
 $container->add(\App\Controller\SpaceController::class)
-    ->addArgument(\Envms\FluentPDO\Query::class)
-    ->addArgument(\App\Helper\ResponseHelper::class);
+    ->addArgument(\App\Table\SolarSystemTable::class)
+    ->addArgument(\App\Table\PlanetTable::class);
 
 $container->add(\App\Controller\BankController::class)
     ->addArgument(\Envms\FluentPDO\Query::class)
@@ -60,6 +60,12 @@ $container->add(\App\Table\AccountTokenTable::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Table\ContractTable::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+$container->add(\App\Table\SolarSystemTable::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+$container->add(\App\Table\PlanetTable::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 #

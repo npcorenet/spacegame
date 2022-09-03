@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Http\JsonResponse;
 use App\Model\ContractAccount;
 use App\Service\ContractService;
 use DateTime;
@@ -63,24 +64,21 @@ class ContractController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         if(!isset($args['id']))
         {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
 
         $contractId = (int)$args['id'];
-        $contractService = new ContractService();
         $contractTable = new ContractTable($this->database);
         $contractData = $contractTable->findById($contractId);
 
         if($contractData === FALSE)
         {
-            $this->data = $this->responseHelper->createResponse(404);
-            return $this->response();
+            return new JsonResponse(404);
         }
 
         $contract = new Contract();
@@ -98,8 +96,7 @@ class ContractController extends AbstractController
 
         if($contract->getAvailableFrom() > new DateTime())
         {
-            $this->data = $this->responseHelper->createResponse(404);
-            return $this->response();
+            return new JsonResponse(404);
         }
 
         $contractAccountTable = new ContractAccountTable($this->database);
@@ -115,21 +112,19 @@ class ContractController extends AbstractController
         }
         unset($data['availableFrom']);
 
-        $this->data = $this->responseHelper->createResponse(code: 200, data: $data);
-        return $this->response();
+        return new JsonResponse(200, $data);
     }
 
     public function claim(RequestInterface $request, array $args): Response
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         if(!isset($args['id']))
         {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
         $contractId = (int)$args['id'];
 
@@ -144,8 +139,7 @@ class ContractController extends AbstractController
             (!$contractService->checkContractAvailability($contract, $this->timeZone, $this->getUserAccountData()['level']))
         )
         {
-            $this->data[] = $this->responseHelper->createResponse(404);
-            $this->response();
+            return new JsonResponse(404);
         }
 
         $contractAccount = new ContractAccount();
@@ -156,14 +150,12 @@ class ContractController extends AbstractController
         $contractAccountTable = new ContractAccountTable($this->database);
         if($contractAccountTable->findByContractAndUserId($contractAccount->getContract(), $contractAccount->getUser()))
         {
-            $this->data = $this->responseHelper->createResponse(410);
-            return $this->response();
+            return new JsonResponse(410);
         }
 
         $contractAccountTable->insert($contractAccount);
 
-        $this->data = $this->responseHelper->createResponse(code:200);
-        return $this->response();
+        return new JsonResponse(200);
     }
 
 }

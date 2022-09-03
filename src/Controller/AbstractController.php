@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Helper\ResponseHelper;
+use App\Http\JsonResponse;
 use App\Table\AccountTable;
 use App\Table\AccountTokenTable;
 use DateTime;
@@ -23,8 +24,7 @@ abstract class AbstractController
     public DateTimeZone $timeZone;
 
     public function __construct(
-        public Query $database,
-        public ResponseHelper $responseHelper
+        public Query $database
     ) {
         $this->timeZone = new DateTimeZone($_ENV['SOFTWARE_TIMEZONE']);
     }
@@ -32,8 +32,7 @@ abstract class AbstractController
     public function isAuthenticatedAndValid(): Response|int
     {
         if (!isset($_SERVER['HTTP_X_API_KEY'])) {
-            $this->data = $this->responseHelper->createResponse(403);
-            return $this->response();
+            return new JsonResponse(403);
         }
 
         $token = $_SERVER['HTTP_X_API_KEY'];
@@ -50,8 +49,7 @@ abstract class AbstractController
             return $accountTokenData['userId'];
         }
 
-        $this->data = $this->responseHelper->createResponse(403);
-        return $this->response();
+        return new JsonResponse(403);
     }
 
     public function response(array $data = []): Response

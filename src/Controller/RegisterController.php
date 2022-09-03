@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Exception\AccountException;
-use App\Helper\ResponseHelper;
+use App\Http\JsonResponse;
 use App\Model\Authentication\Account;
 use App\Service\AccountService;
-use App\Service\RegisterService;
-use App\Table\AccountTable;
 use App\Validation\RegisterFields;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
@@ -18,24 +16,21 @@ use Psr\Http\Message\RequestInterface;
 class RegisterController extends AbstractController
 {
 
-    public function __construct(Query $database, ResponseHelper $responseHelper, private readonly AccountService $accountService)
+    public function __construct(Query $database, private readonly AccountService $accountService)
     {
         $this->database = $database;
-        $this->responseHelper = $responseHelper;
-        parent::__construct($this->database, $this->responseHelper);
+        parent::__construct($this->database);
     }
 
     public function load(RequestInterface $request): Response
     {
-        $this->data = $this->responseHelper->createResponse(405);
-        return $this->response();
+        return new JsonResponse(405);
     }
 
     public function run(): Response
     {
         if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password'])) {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
 
         $account = new Account();
@@ -45,18 +40,15 @@ class RegisterController extends AbstractController
 
         $validateFields = new RegisterFields();
         if (!empty($validateData = $validateFields->validate($account))) {
-            $this->data = $validateData;
-            return $this->response();
+            return new JsonResponse(code: $validateData['code'], message: $validateData['message']);
         }
 
         try {
             $this->accountService->create($account);
-            $this->data = $this->responseHelper->createResponse(200);
-            return $this->response();
+            return new JsonResponse(200);
         } catch (AccountException $exception)
         {
-            $this->data = $this->responseHelper->createResponse($exception->getCode(), $exception->getMessage());
-            return $this->response();
+            return new JsonResponse(code: $exception->getCode(), message: $exception->getMessage());
         }
     }
 

@@ -9,6 +9,12 @@ if(!isset($_ENV['SOFTWARE_FORMAT_TIMESTAMP']))
 {
     throw new \App\Exception\EnvironmentMissingException('Missing Variable: SOFTWARE_FORMAT_TIMESTAMP');
 }
+define("TIMEZONE", new DateTimeZone($_ENV['SOFTWARE_TIMEZONE']));
+
+if(empty($_ENV['DB_HOST']) || empty($_ENV['DB_NAME']) || empty($_ENV['DB_USER']) || !isset($_ENV['DB_PASS']))
+{
+    throw new \App\Exception\EnvironmentMissingException('Missing or incomplete Database Configuration');
+}
 
 const CACHE_DIR = __DIR__.'/../cache/';
 

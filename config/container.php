@@ -31,6 +31,7 @@ $container->add(\App\Controller\TransactionController::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Controller\ContractController::class)
+    ->addArgument(\App\Service\ContractService::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 #
@@ -43,6 +44,10 @@ $container->add(\App\Service\AccountService::class)
 
 $container->add(\App\Service\SecurityService::class);
 
+$container->add(\App\Service\ContractService::class)
+    ->addArgument(\App\Table\ContractTable::class)
+    ->addArgument(\App\Table\ContractAccountTable::class);
+
 #
 # Repositories
 #
@@ -53,6 +58,9 @@ $container->add(\App\Table\AccountTokenTable::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Table\ContractTable::class)
+    ->addArgument(\Envms\FluentPDO\Query::class);
+
+$container->add(\App\Table\ContractAccountTable::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 $container->add(\App\Table\SolarSystemTable::class)

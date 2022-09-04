@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\EnvironmentMissingException;
 use App\Http\JsonResponse;
 use App\Table\AccountTable;
 use App\Table\AccountTokenTable;
@@ -21,9 +22,16 @@ abstract class AbstractController
     private DateTime $tokenValidUntil;
     public DateTimeZone $timeZone;
 
+    /**
+     * @throws EnvironmentMissingException
+     */
     public function __construct(
         public Query $database
-    ) {
+    ) { 
+        if(!isset($_ENV['SOFTWARE_TIMEZONE']))
+        {
+            throw new EnvironmentMissingException('Timezone is not set');
+        }
         $this->timeZone = new DateTimeZone($_ENV['SOFTWARE_TIMEZONE']);
     }
 
@@ -41,7 +49,7 @@ abstract class AbstractController
             $this->userId = $accountTokenData['userId'];
             $this->tokenValidUntil = new DateTime(
                 $accountTokenData['validUntil'],
-                new DateTimeZone($_ENV['SOFTWARE_TIMEZONE'])
+                $this->timeZone
             );
             $this->token = $token;
             return $accountTokenData['userId'];

@@ -35,6 +35,7 @@ class JsonResponse extends OriginalJsonResponse
             403 => 'authentication-required',
             404 => 'not-found',
             405 => 'method-not-allowed',
+            406 => 'not-acceptable',
             409 => 'confirmation-required',
             410 => 'no-longer-available',
             500 => 'unknown-error',

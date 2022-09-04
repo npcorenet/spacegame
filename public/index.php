@@ -16,7 +16,7 @@ if(empty($_ENV['DB_HOST']) || empty($_ENV['DB_NAME']) || empty($_ENV['DB_USER'])
     throw new \App\Exception\EnvironmentMissingException('Missing or incomplete Database Configuration');
 }
 
-const CACHE_DIR = __DIR__.'/../cache/';
+const CACHE_DIR = __DIR__.'/../data/cache/';
 
 require_once __DIR__ . '/../config/general.php';
 require_once __DIR__.'/../config/container.php';

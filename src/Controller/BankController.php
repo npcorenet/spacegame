@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Http\JsonResponse;
 use App\Model\Finances\BankAccount;
 use App\Service\BankAccountService;
 use App\Table\BankAccountTable;
@@ -19,7 +20,7 @@ class BankController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         $bankAccountTable = new BankAccountTable($this->database);
@@ -29,27 +30,22 @@ class BankController extends AbstractController
         $bankAccountLimit = $bankAccountService->countMaxBankAccountsByLevel($this->getUserAccountData()['level']);
         $bankAccountCount = count($bankAccountTable->findAllByUserId($this->getUserAccountData()['id']));
 
-        $data = [
+        return new JsonResponse(200, [
             'limit' => $bankAccountLimit,
             'count' => $bankAccountCount,
             'accounts' => $accounts
-        ];
-
-        $this->data = $this->responseHelper->createResponse(code: 200, data: $data);
-
-        return $this->response();
+        ]);
     }
 
     public function create(RequestInterface $request): Response
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         if (!isset($_POST['name'])) {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
 
         $bankAccountService = new BankAccountService();
@@ -58,94 +54,74 @@ class BankController extends AbstractController
         $bankAccountCount = count($bankAccountTable->findAllByUserId($this->getUserAccountData()['id']));
 
         if ($bankAccountLimit <= $bankAccountCount) {
-            $this->data = $this->responseHelper->createResponse(
-                code: 200,
-                message: 'bank-account-limit-reached',
-                data: ['limit' => $bankAccountLimit, 'current' => $bankAccountCount]
-            );
-            return $this->response();
+            return new JsonResponse(200, ['limit' => $bankAccountLimit, 'current' => $bankAccountCount], 'bank-account-limit-reached');
         }
 
         $bankAccount = new BankAccount();
         $bankAccount->setAddress($bankAccountService->generateBankAddress());
         $bankAccount->setUser($userId);
-        $bankAccount->setCreated(new DateTime('', new DateTimeZone($_ENV['SOFTWARE_TIMEZONE'])));
+        $bankAccount->setCreated(new DateTime('', $this->timeZone));
         $bankAccount->setDefaultAccount($bankAccountCount === 0);
         $bankAccount->setName($_POST['name']);
         if ($bankAccountTable->insert($bankAccount) !== false) {
-            $this->data = $this->responseHelper->createResponse(
-                code: 200, data: ['address' => $bankAccount->getAddress(), 'name' => $bankAccount->getName()]
-            );
-
-            return $this->response();
+            return new JsonResponse(200, ['address' => $bankAccount->getAddress(), 'name' => $bankAccount->getName()]);
         }
 
-        $this->data = $this->responseHelper->createResponse(500);
-        return $this->response();
+        return new JsonResponse(500);
     }
 
     public function show(RequestInterface $request, array $args): Response
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         if (!isset($args['address'])) {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
 
         $bankAccountTable = new BankAccountTable($this->database);
         $bankAccountData = $bankAccountTable->findByAddressAndUserId($args['address'], $userId);
 
         if ($bankAccountData === false) {
-            $this->data = $this->responseHelper->createResponse(code: 400, message: 'bank-account-not-found');
-            return $this->response();
+            return new JsonResponse(404);
         }
 
-        $this->data = $this->responseHelper->createResponse(code: 200, data: $bankAccountData);
-
-        return $this->response();
+        return new JsonResponse(200, $bankAccountData);
     }
 
     public function delete(RequestInterface $request, array $args): Response
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         if (!isset($args['token']) || !isset($args['address'])) {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            new JsonResponse(400);
         }
 
         $bankAccountTable = new BankAccountTable($this->database);
         $accountList = $bankAccountTable->findAllByUserId($userId);
         $tokenList = $bankAccountTable->findByAddress($args['address']);
         if (($accountList === false) || ($tokenList === false)) {
-            $this->data = $this->responseHelper->createResponse(404);
-            return $this->response();
+            new JsonResponse(404);
         }
 
         if ($args['token'] !== $this->token) {
-            $this->data = $this->responseHelper->createResponse(409, 'confirmation-required');
-            return $this->response();
+            return new JsonResponse(409);
         }
 
         if (count($accountList) <= 1) {
-            $this->data = $this->responseHelper->createResponse(401, 'one-account-minimum');
-            return $this->response();
+            return new JsonResponse(code: 200, message: 'one-account-minimum');
         }
 
         if (!$bankAccountTable->deleteByAddressAndUserId($args['address'], $userId)) {
-            $this->data = $this->responseHelper->createResponse(500);
-            return $this->response();
+            return new JsonResponse(500);
         }
 
-        $this->data = $this->responseHelper->createResponse(200);
-        return $this->response();
+        return new JsonResponse(200);
     }
 
 }

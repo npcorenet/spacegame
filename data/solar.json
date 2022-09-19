@@ -1,0 +1,13 @@
+{
+    "lastPush": null,
+    "table": "SolarSystem",
+    "data": [
+        {
+            "id": 0,
+            "name": "sun",
+            "starMass": 332946,
+            "starRadius": 696340,
+            "temperature": 5778
+        }
+    ]
+}

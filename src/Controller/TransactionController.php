@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Http\JsonResponse;
 use App\Model\Finances\BankAccount;
 use App\Model\Finances\Transaction;
 use App\Service\TransactionService;
@@ -22,11 +23,10 @@ class TransactionController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
-        $this->data = $this->responseHelper->createResponse(405);
-        return $this->response();
+        return new JsonResponse(405);
     }
 
     /**
@@ -36,12 +36,11 @@ class TransactionController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         if (!isset($_POST['fromAccount'], $_POST['toAccount'], $_POST['contract'], $_POST['name'], $_POST['amount'])) {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
 
         $bankAccountTable = new BankAccountTable($this->database);
@@ -73,8 +72,7 @@ class TransactionController extends AbstractController
         $transaction->setContract(0);
 
         if ($senderAccount === false || $destinationAccount === false) {
-            $this->data = $this->responseHelper->createResponse(400, 'sender-or-destination-missing');
-            return $this->response();
+            return new JsonResponse(code: 400, message: 'sender-or-destination-missing');
         }
 
         $transactionTable = new TransactionTable($this->database);
@@ -91,64 +89,47 @@ class TransactionController extends AbstractController
         );
 
         if ($transactionResult === true) {
-            $this->data = $this->responseHelper->createResponse(200);
-            return $this->response();
+            return new JsonResponse(200);
         }
 
         if ($transactionResult === false) {
-            $this->data = [
-                'code' => 500,
-                'message' => 'transaction-not-finish-able',
-                'data' => [
-                    'newMoney' => $sender->getAmount(),
-                    'balance' => $senderMoney,
-                    'debtAllowed' => $sender->isDebtAllowed()
-                ]
-            ];
-            return $this->response();
+            return new JsonResponse(500, [
+                'newMoney' => $sender->getAmount(),
+                'balance' => $senderMoney,
+                'debtAllowed' => $sender->isDebtAllowed()
+            ], 'transaction-not-finish-able');
         }
 
-        $this->data = $this->responseHelper->createResponse(500);
-        return $this->response();
+        return new JsonResponse(500);
     }
 
     public function list(RequestInterface $request, array $args = []): Response
     {
         $userId = $this->isAuthenticatedAndValid();
-        if ($userId === false) {
-            $this->data = $this->responseHelper->createResponse(403);
-            return $this->response();
+        if ($userId instanceof Response) {
+            return $userId;
         }
 
         if (empty($args['token'])) {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
-
         $token = $args['token'];
 
         $bankAccountTable = new BankAccountTable($this->database);
         $bankAccountData = $bankAccountTable->findByAddressAndUserId($token, $userId);
 
         if ($bankAccountData === false) {
-            $this->data = $this->responseHelper->createResponse(404, 'account-not-found');
-            return $this->response();
+            return new JsonResponse(404);
         }
 
         $transactionTable = new TransactionTable($this->database);
         $transactionData = $transactionTable->findAllByBankAccountId($bankAccountData['id']);
 
         if ($transactionData === false) {
-            $this->data = $this->responseHelper->createResponse(404, 'account-not-found');
-            return $this->response();
+            return new JsonResponse(404);
         }
 
-        $this->data = $this->responseHelper->createResponse(
-            code: 200,
-            data: $transactionData
-        );
-
-        return $this->response();
+        return new JsonResponse(200, $transactionData);
     }
 
 }

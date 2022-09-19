@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Model\Authentication;
 
+use App\Model\AbstractModel;
 use DateTime;
 
-class Account
+class Account extends AbstractModel
 {
 
     protected int $id;

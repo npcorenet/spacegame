@@ -1,0 +1,54 @@
+{
+    "lastPush": "2022-09-04 14:12:46",
+    "table": "Contract",
+    "data": [
+        {
+            "id": 1,
+            "name": "First Mission",
+            "description": "Run your first Mission and research earth in suborbital velocity",
+            "availableFrom": "1970-01-01 00:00:00",
+            "availableUntil": null,
+            "maxDuration": 12,
+            "minimumLevel": 1,
+            "prePayment": 25000,
+            "reward": 75000,
+            "userLimit": 0
+        },
+        {
+            "id": 2,
+            "name": "Reach LEO",
+            "description": "Reach the LEO - short for Low Earth Orbit, and research earth in orbital speeds",
+            "availableFrom": "1970-01-01 00:00:00",
+            "availableUntil": null,
+            "maxDuration": 24,
+            "minimumLevel": 2,
+            "prePayment": 25000,
+            "reward": 75000,
+            "userLimit": 0
+        },
+        {
+            "id": 3,
+            "name": "Higher LEO",
+            "description": "After you first reached a Low Earth Orbit, you should go higher to research how experiments behave at a higher point of LEO",
+            "availableFrom": "1970-01-01 00:00:00",
+            "availableUntil": null,
+            "maxDuration": 28,
+            "minimumLevel": 3,
+            "prePayment": 25000,
+            "reward": 75000,
+            "userLimit": 0
+        },
+        {
+            "id": 4,
+            "name": "Polar Orbit",
+            "description": "In Polar Orbits you can further explore the North and South Pole of Planet Earth.",
+            "availableFrom": "1970-01-01 00:00:00",
+            "availableUntil": null,
+            "maxDuration": 40,
+            "minimumLevel": 3,
+            "prePayment": 25000,
+            "reward": 75000,
+            "userLimit": 0
+        }
+    ]
+}

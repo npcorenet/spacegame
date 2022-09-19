@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Http\JsonResponse;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\RequestInterface;
 
@@ -14,17 +15,13 @@ class AccountController extends AbstractController
     {
         $userId = $this->isAuthenticatedAndValid();
         if ($userId instanceof Response) {
-            return $this->response();
+            return $userId;
         }
 
         $this->getUserAccountData();
         unset($this->userData['password']);
 
-        $this->data = $this->responseHelper->createResponse(
-            code: 200,
-            data: $this->userData
-        );
-        return $this->response();
+        return new JsonResponse(200, $this->userData);
     }
 
 }

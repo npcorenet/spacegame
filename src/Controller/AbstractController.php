@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Helper\ResponseHelper;
+use App\Exception\EnvironmentMissingException;
+use App\Http\JsonResponse;
 use App\Table\AccountTable;
 use App\Table\AccountTokenTable;
 use DateTime;
@@ -12,31 +13,32 @@ use DateTimeZone;
 use Envms\FluentPDO\Query;
 use Laminas\Diactoros\Response;
 
-class AbstractController
+abstract class AbstractController
 {
 
-    public const ERROR403 = 'invalid-token';
-    public const CODE200 = 'success';
-
     public string $token;
-    public array $data = [];
     public array $userData = [];
     private int $userId = 0;
     private DateTime $tokenValidUntil;
     public DateTimeZone $timeZone;
 
+    /**
+     * @throws EnvironmentMissingException
+     */
     public function __construct(
-        public readonly Query $database,
-        public readonly ResponseHelper $responseHelper
-    ) {
+        public Query $database
+    ) { 
+        if(!isset($_ENV['SOFTWARE_TIMEZONE']))
+        {
+            throw new EnvironmentMissingException('Timezone is not set');
+        }
         $this->timeZone = new DateTimeZone($_ENV['SOFTWARE_TIMEZONE']);
     }
 
     public function isAuthenticatedAndValid(): Response|int
     {
         if (!isset($_SERVER['HTTP_X_API_KEY'])) {
-            $this->data = $this->responseHelper->createResponse(403);
-            return $this->response();
+            return new JsonResponse(403);
         }
 
         $token = $_SERVER['HTTP_X_API_KEY'];
@@ -47,28 +49,13 @@ class AbstractController
             $this->userId = $accountTokenData['userId'];
             $this->tokenValidUntil = new DateTime(
                 $accountTokenData['validUntil'],
-                new DateTimeZone($_ENV['SOFTWARE_TIMEZONE'])
+                $this->timeZone
             );
             $this->token = $token;
             return $accountTokenData['userId'];
         }
 
-        $this->data = $this->responseHelper->createResponse(403);
-        return $this->response();
-    }
-
-    public function response(array $data = []): Response
-    {
-        if(!empty($data))
-        {
-            $this->data = $data;
-        }
-
-        $response = new Response();
-
-        $response->getBody()->write(json_encode($this->data));
-
-        return $response->withStatus($this->data['code']?? 500);
+        return new JsonResponse(403);
     }
 
     public function getUserAccountData(): array

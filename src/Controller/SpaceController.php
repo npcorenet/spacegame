@@ -4,38 +4,36 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Http\JsonResponse;
 use App\Service\SpaceService;
 use App\Table\PlanetTable;
 use App\Table\SolarSystemTable;
 use Laminas\Diactoros\Response;
 
-class SpaceController extends AbstractController
+class SpaceController
 {
+
+    public function __construct(
+        private readonly SolarSystemTable $solarSystemTable,
+        private readonly PlanetTable $planetTable
+    )
+    {
+    }
 
     public function load(): Response
     {
-        $userId = $this->isAuthenticatedAndValid();
-        if ($userId instanceof Response) {
-            return $this->response();
-        }
-
         if (!file_exists(CACHE_DIR . '/planets.json')) {
-            $solarSystemTable = new SolarSystemTable($this->database);
-            $planetTable = new PlanetTable($this->database);
-
-            $spaceData = (new SpaceService($solarSystemTable, $planetTable))->generateSolarSystemArray();
+            $spaceData = (new SpaceService($this->solarSystemTable, $this->planetTable))->generateSolarSystemArray();
 
             file_put_contents(CACHE_DIR . '/planets.json', json_encode($spaceData));
 
-            $this->data = $this->responseHelper->createResponse(code: 200, data: $spaceData);
-            return $this->response();
+            return new JsonResponse(200, $spaceData);
         }
 
         $spaceData = file_get_contents(CACHE_DIR . '/planets.json');
-        $spaceData = json_decode($spaceData);
+        $spaceData = json_decode($spaceData, true);
 
-        $this->data = $this->responseHelper->createResponse(code: 200, data: $spaceData);
-        return $this->response();
+        return new JsonResponse(200, $spaceData);
     }
 
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Helper\TokenHelper;
+use App\Http\JsonResponse;
 use App\Model\Authentication\Account;
 use App\Service\LoginService;
 use App\Table\AccountTable;
@@ -18,15 +19,13 @@ class LoginController extends AbstractController
 
     public function load(RequestInterface $request): Response
     {
-        $this->data = $this->responseHelper->createResponse(405);
-        return $this->response();
+        return new JsonResponse(405);
     }
 
     public function run(): Response
     {
         if (!isset($_POST['email']) || !isset($_POST['password'])) {
-            $this->data = $this->responseHelper->createResponse(400);
-            return $this->response();
+            return new JsonResponse(400);
         }
 
         $account = new Account();
@@ -35,8 +34,7 @@ class LoginController extends AbstractController
 
         $validateData = (new LoginFields($account))->validate();
         if (!empty($validateData)) {
-            $this->data = $this->responseHelper->createResponse($validateData['code'], $validateData['message']);
-            return $this->response();
+            return new JsonResponse(code: $validateData['code'], message: $validateData['message']);
         }
 
         $loginService = new LoginService(
@@ -47,12 +45,7 @@ class LoginController extends AbstractController
         );
 
         $loginResponse = $loginService->login();
-        $this->data = $this->responseHelper->createResponse(
-            $loginResponse['code'],
-            $loginResponse['message'],
-            $loginResponse['accountInfo'] ?? null
-        );
-        return $this->response();
+        return new JsonResponse($loginResponse['code'], $loginResponse['accountInfo'] ?? null, $loginResponse['message']);
     }
 
 }

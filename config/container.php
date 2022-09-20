@@ -70,6 +70,12 @@ $container->add(\App\Table\PlanetTable::class)
     ->addArgument(\Envms\FluentPDO\Query::class);
 
 #
+#
+#
+$container->add(\App\Middleware\AuthenticationMiddleware::class)
+    ->addArgument(\App\Service\AccountService::class);
+
+#
 # Dependencies
 #
 

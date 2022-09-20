@@ -52,6 +52,7 @@ abstract class AbstractModel
                     $this->$var = new DateTime($value, new \DateTimeZone($_ENV['SOFTWARE_TIMEZONE']));
                     continue;
                 }
+
                 $this->$var = $value;
             }
         }

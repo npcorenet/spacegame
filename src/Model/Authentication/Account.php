@@ -16,10 +16,10 @@ class Account extends AbstractModel
     protected string $password;
     protected int $experience;
     protected int $level;
-    protected DateTime $premium;
+    protected ?DateTime $premium;
     protected DateTime $registered;
-    protected bool $isAdmin;
-    protected bool $active;
+    protected bool $isAdmin = false;
+    protected bool $active = false;
 
     public function getId(): int
     {
@@ -91,12 +91,12 @@ class Account extends AbstractModel
         $this->level = $level;
     }
 
-    public function getPremium(): DateTime
+    public function getPremium(): ?DateTime
     {
         return $this->premium;
     }
 
-    public function setPremium(DateTime $premium): void
+    public function setPremium(?DateTime $premium): void
     {
         $this->premium = $premium;
     }
@@ -116,9 +116,9 @@ class Account extends AbstractModel
         return $this->isAdmin;
     }
 
-    public function setIsAdmin(bool $isAdmin): void
+    public function setIsAdmin(int|bool $isAdmin): void
     {
-        $this->isAdmin = $isAdmin;
+        $this->isAdmin = (bool)$isAdmin;
     }
 
     public function getActive(): bool
@@ -126,9 +126,9 @@ class Account extends AbstractModel
         return $this->active;
     }
 
-    public function setActive(bool $active): void
+    public function setActive(int|bool $active): void
     {
-        $this->active = $active;
+        $this->active = (bool)$active;
     }
 
 }

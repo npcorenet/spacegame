@@ -45,7 +45,7 @@ class AccountService
             return null;
         }
 
-        return (new Account())->fillFromArray($user);
+        return (new Account())->fillFromArray($this->integersToBool($user));
     }
 
     public function findAccountBySession(string $token): ?Account
@@ -57,7 +57,7 @@ class AccountService
             return null;
         }
 
-        return (new Account())->fillFromArray($accountData);
+        return (new Account())->fillFromArray($this->integersToBool($accountData));
     }
 
     private function emailExists(string $email): bool
@@ -78,6 +78,21 @@ class AccountService
         }
 
         return true;
+    }
+
+    private function integersToBool(array $accountData): array
+    {
+        if(isset($accountData['active']))
+        {
+            $accountData['isAdmin'] = $accountData['isAdmin'] === 1;
+        }
+
+        if(isset($accountData['active']))
+        {
+            $accountData['active'] = $accountData['active'] === 1;
+        }
+
+        return $accountData;
     }
 
 }

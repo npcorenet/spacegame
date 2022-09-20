@@ -1,9 +1,9 @@
 {
-    "lastPush": "2022-09-04 14:12:46",
+    "lastPush": "2022-09-19 16:55:42",
     "table": "Contract",
     "data": [
         {
-            "id": 1,
+            "id": 0,
             "name": "First Mission",
             "description": "Run your first Mission and research earth in suborbital velocity",
             "availableFrom": "1970-01-01 00:00:00",
@@ -15,7 +15,7 @@
             "userLimit": 0
         },
         {
-            "id": 2,
+            "id": 0,
             "name": "Reach LEO",
             "description": "Reach the LEO - short for Low Earth Orbit, and research earth in orbital speeds",
             "availableFrom": "1970-01-01 00:00:00",
@@ -27,7 +27,7 @@
             "userLimit": 0
         },
         {
-            "id": 3,
+            "id": 0,
             "name": "Higher LEO",
             "description": "After you first reached a Low Earth Orbit, you should go higher to research how experiments behave at a higher point of LEO",
             "availableFrom": "1970-01-01 00:00:00",
@@ -39,7 +39,7 @@
             "userLimit": 0
         },
         {
-            "id": 4,
+            "id": 0,
             "name": "Polar Orbit",
             "description": "In Polar Orbits you can further explore the North and South Pole of Planet Earth.",
             "availableFrom": "1970-01-01 00:00:00",

@@ -5,23 +5,24 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Http\JsonResponse;
+use App\Model\Authentication\Account;
+use http\Client\Curl\User;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class AccountController extends AbstractController
 {
 
-    public function load(RequestInterface $request): Response
+    public function load(ServerRequestInterface $request): Response
     {
-        $userId = $this->isAuthenticatedAndValid();
-        if ($userId instanceof Response) {
-            return $userId;
-        }
+        /* @var Account $account */
+        $account = $request->getAttribute(Account::class);
 
-        $this->getUserAccountData();
-        unset($this->userData['password']);
+        $account = $account->generateArrayFromSetVariables();
+        unset($account['password']);
 
-        return new JsonResponse(200, $this->userData);
+        return new JsonResponse(200, $account);
     }
 
 }

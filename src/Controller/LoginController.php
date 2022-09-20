@@ -24,13 +24,14 @@ class LoginController extends AbstractController
 
     public function run(): Response
     {
-        if (!isset($_POST['email']) || !isset($_POST['password'])) {
+        $requestData = json_decode(file_get_contents('php://input'), true);
+        if (!isset($requestData['email']) || !isset($requestData['password'])) {
             return new JsonResponse(400);
         }
 
         $account = new Account();
-        $account->setEmail($_POST['email']);
-        $account->setPassword($_POST['password']);
+        $account->setEmail($requestData['email']);
+        $account->setPassword($requestData['password']);
 
         $validateData = (new LoginFields($account))->validate();
         if (!empty($validateData)) {

@@ -1,9 +1,9 @@
 {
-    "lastPush": "2022-09-04 14:26:15",
+    "lastPush": null,
     "table": "Planet",
     "data": [
         {
-            "id": 1,
+            "id": 0,
             "solarSystem": 1,
             "moon": null,
             "name": "mercury",
@@ -17,7 +17,7 @@
             "coreTemperature": 440
         },
         {
-            "id": 2,
+            "id": 0,
             "solarSystem": 1,
             "moon": null,
             "name": "venus",
@@ -31,7 +31,7 @@
             "coreTemperature": 737
         },
         {
-            "id": 3,
+            "id": 0,
             "solarSystem": 1,
             "moon": null,
             "name": "earth",
@@ -45,7 +45,7 @@
             "coreTemperature": 4850
         },
         {
-            "id": 4,
+            "id": 0,
             "solarSystem": 1,
             "moon": 3,
             "name": "moon",
@@ -59,7 +59,7 @@
             "coreTemperature": 1873
         },
         {
-            "id": 5,
+            "id": 0,
             "solarSystem": 1,
             "moon": null,
             "name": "mars",
@@ -73,7 +73,7 @@
             "coreTemperature": 1305
         },
         {
-            "id": 6,
+            "id": 0,
             "solarSystem": 1,
             "moon": null,
             "name": "jupiter",
@@ -87,7 +87,7 @@
             "coreTemperature": 20000
         },
         {
-            "id": 7,
+            "id": 0,
             "solarSystem": 1,
             "moon": 6,
             "name": "Io",
